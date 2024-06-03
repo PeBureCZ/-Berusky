@@ -1,7 +1,9 @@
 //STM32 bzucak - client
 #include <WiFi.h>
 #include <MFRC522.h> //library responsible for communicating with the module mfrc522-RC522
+#include <SPI.h> //library responsible for communicating of SPI bus
 #include <esp_wifi.h> //allow esp_wifi_set_max_tx_power(20);
+
 
 //wifi
 const char* ssid     = "berusky";
@@ -14,8 +16,9 @@ int status = WL_IDLE_STATUS;
 bool testChecking = false;
 
 const uint8_t SOUND_ITEM = 13;
+const uint8_t BUILD_IN_DIODE = 2;
 
-#include <SPI.h> //library responsible for communicating of SPI bus
+
 #define SS_PIN    21
 #define RST_PIN   22
 #define SIZE_BUFFER     18
@@ -25,24 +28,6 @@ MFRC522::MIFARE_Key key;
 MFRC522::StatusCode wifiStatus;
 MFRC522 mfrc522(SS_PIN, RST_PIN); 
 
-void setup()
-{
-    Serial.begin(115200);
-    pinMode(SOUND_ITEM, OUTPUT);
-    digitalWrite(SOUND_ITEM, HIGH);
-    SPI.begin(); // Init SPI bus
-    //  // Init MFRC522
-    mfrc522.PCD_Init(); 
-    Serial.println("\nConnecting");
-    Serial.println(get_wifi_status(status));
-    WiFi.begin(ssid, password);
-
-    esp_wifi_set_max_tx_power(200);
-    Serial.print("dBm = ");
-    Serial.print(WiFi.getTxPower());
-    Serial.print(" / 4 \n"); 
-}
-
 void rfidCheck()
 {
   if (!testChecking) 
@@ -50,35 +35,32 @@ void rfidCheck()
       testChecking = true;
       Serial.print("\nchecking now\n");
   }
-   // Aguarda a aproximacao do cartao
-   //waiting the card approach
   if ( !mfrc522.PICC_IsNewCardPresent()) 
   {
-    //Serial.print("test1\n");
     return;
   }
   // Select a card
   if ( ! mfrc522.PICC_ReadCardSerial()) 
   {
-    //Serial.print("test2\n");
+    Serial.print("test2\n");
     return;
   }
   
-  // výpis informace o verzi mfrc522 tagu
+  // WRITE INFORMATION
   MFRC522::PICC_Type piccType = mfrc522.PICC_GetType(mfrc522.uid.sak);
   Serial.print("mfrc522 tag typu: ");
   Serial.println(mfrc522.PICC_GetTypeName(piccType));
 
-  // kontrola podporovaných typů mfrc522 tagu
+  // CHECK SUPPORTED TYPES
   if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&  
     piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
     piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
     Serial.println("Tento mfrc522 tag neni podporovany (typ MIFARE Classic).");
     return;
   }
-  // výpis adresy mfrc522 tagu v hexa formátu
+  // write hex id
   Serial.print("Adresa mfrc522 tagu: ");
-  vypisHex(mfrc522.uid.uidByte, mfrc522.uid.size);
+  hexPrint(mfrc522.uid.uidByte, mfrc522.uid.size);
   Serial.println();
 
   if(mfrc522.uid.uidByte[0] == 0x80 & mfrc522.uid.uidByte[1] == 0x71 & mfrc522.uid.uidByte[2] == 0xD8 & mfrc522.uid.uidByte[3] == 0x55) 
@@ -89,7 +71,7 @@ void rfidCheck()
   }
   else 
   {
-    Serial.println("Detekovan neznamy mfrc522 tag!");
+    Serial.println("Detekovan neznamy mfrc522 tag! + send data");
     sendData(38,39);
   }
 
@@ -100,7 +82,7 @@ void rfidCheck()
 }
 
 // podprogram pro výpis adresy mfrc522 tagu v hexa formátu
-void vypisHex(byte *buffer, byte bufferSize) 
+void hexPrint(byte *buffer, byte bufferSize) 
 {
   for (byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
@@ -128,33 +110,7 @@ String get_wifi_status(int status)
         return "WL_DISCONNECTED";
     }
 }
- 
-void loop()
-{
-  delay(200);
-  status = WiFi.status();
-  if (status == WL_CONNECTED)
-  {
-    //sendData(4);
-    rfidCheck();
-  }
-  else
-  {
-    testChecking = false;
-    while(status != WL_CONNECTED)
-    {
-      status = WiFi.status();
-      Serial.println(get_wifi_status(status));
-      delay(1000);
-    }
-  }
-  
-  // if(client.connect(IP , 24)) 
-  // {
-  //   Serial.print("\nclient yes");   
-  // }
-  // else Serial.print("\nclient no");
-}
+
 
 void sendData(uint8_t firstData, uint8_t secondData)
 {
@@ -169,14 +125,15 @@ void sendData(uint8_t firstData, uint8_t secondData)
     Serial.print(" + ");
     Serial.print(dataStr[1]);
     client.flush();
-        for(int i = 0; i < 4; i++)
+    client.stop();
+    for(int i = 0; i < 4; i++)
     {
       digitalWrite(SOUND_ITEM, LOW);
       delay(500);
       digitalWrite(SOUND_ITEM, HIGH);
       delay(500);
     }
-    client.stop();
+    
     Serial.print("end send");
   }
   else Serial.print("no send");
