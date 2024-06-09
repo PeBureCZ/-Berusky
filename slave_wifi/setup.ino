@@ -10,6 +10,7 @@ void setup()
     mfrc522.PCD_Init(); 
     Serial.println("\nConnecting");
     Serial.println(get_wifi_status(status));
+    WiFi.mode(WIFI_STA); //WIFI_STATION
     WiFi.begin(ssid, password);
 
     esp_wifi_set_max_tx_power(200);

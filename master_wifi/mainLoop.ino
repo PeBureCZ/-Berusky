@@ -13,5 +13,6 @@ void loop()
       //else Serial.print("no data\n");
     }
   }
+  nexLoop(nex_listen_list);
   delay(50);
 }
