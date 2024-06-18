@@ -4,18 +4,25 @@
 #include <esp_wifi.h>
 #include <Preferences.h> //flash memory 
 
-//const uint8_t BUILD_IN_DIODE = 2;
+const uint8_t BUILD_IN_DIODE = 2;
+const uint8_t TX_PIN = 17;
+const uint8_t RX_PIN = 16;
 
 WiFiServer server(24);
 const char *ssid = "berusky";
 const char *password = "neprolomitelne";
 
-HardwareSerial nextionSerial(2);
+//HardwareSerial nextionSerial(2);
 
-NexButton b0 = NexButton(0, 2, "b0");
+char buffer[100] = {0};
+
+NexButton b0 = NexButton(0, 2, "b0"); //page id = 0, component id = 2, obj name = b0
+NexText t0 = NexText(0, 1, "t0");
+
 NexTouch *nex_listen_list[] = 
 {
     &b0,
+    //another buttons, event, etc..?
     NULL
 };
 

@@ -14,5 +14,6 @@ void loop()
     }
   }
   nexLoop(nex_listen_list);
+  //b0_Release(nullptr);
   delay(50);
 }
