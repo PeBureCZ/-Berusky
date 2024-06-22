@@ -3,6 +3,8 @@
 #include <WiFi.h>
 #include <esp_wifi.h>
 #include <Preferences.h> //flash memory 
+#include <MFRC522.h> //library responsible for communicating with the module mfrc522-RC522
+#include <SPI.h> //library responsible for communicating of SPI bus
 
 const uint8_t BUILD_IN_DIODE = 2;
 const uint8_t TX_PIN = 17;
@@ -12,10 +14,22 @@ WiFiServer server(24);
 const char *ssid = "berusky";
 const char *password = "neprolomitelne";
 
-//HardwareSerial nextionSerial(2);
+//global values
+byte lastChipUsed[4] = {0x00, 0x00, 0x00, 0x00};
+unsigned int actualTime = 0;
 
-char buffer[100] = {0};
+//time
+hw_timer_t *timer = nullptr;
 
+//CHIP READER MFRC
+
+const uint8_t SS_PIN = 21;
+const uint8_t RST_PIN = 22;
+MFRC522::MIFARE_Key key;
+MFRC522::StatusCode wifiStatus;
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+
+//Nextion (display)
 NexButton b0 = NexButton(0, 2, "b0"); //page id = 0, component id = 2, obj name = b0
 NexText t0 = NexText(0, 1, "t0");
 
@@ -26,14 +40,11 @@ NexTouch *nex_listen_list[] =
     NULL
 };
 
+void IRAM_ATTR onTimer()
+{
+  actualTime++; //seconds
+  printTime();
+}
+
 Preferences preferences; //FLASH MEMORY INICIALIZATION
 
-void recieveData(WiFiClient client)
-{
-  uint8_t dataStr[2]; 
-  client.readBytes(dataStr, 2);
-  Serial.print("Received data: ");
-  Serial.print(dataStr[0]);
-  Serial.print("+");
-  Serial.println(dataStr[1]);
-}
