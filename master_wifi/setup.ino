@@ -2,7 +2,7 @@ void setup()
 {
   Serial.begin(115200);
   pinMode(BUILD_IN_DIODE, OUTPUT);
-  digitalWrite(BUILD_IN_DIODE, HIGH);
+  digitalWrite(BUILD_IN_DIODE, LOW);
   
   pinMode(RX_PIN, INPUT);
   pinMode(TX_PIN, OUTPUT);
@@ -10,7 +10,11 @@ void setup()
   //nextion display init
   nexSerial.begin(9600, SERIAL_8N1, RX_PIN, TX_PIN); // Initialize hardware for Nextion display, pin 16(rx)+17(tx) on board
   nexInit();
-  b0.attachPop(b0_Release, &b0);
+  b0.attachPop(b0_but, &b0);
+  b1.attachPush(b1_press, &b1); //press
+  b1.attachPop(b1_but, &b1); //release
+  b2.attachPop(b2_but, &b2);
+  b3.attachPop(b3_but, &b3);
 
   //init spi + mfrc522
   SPI.begin();

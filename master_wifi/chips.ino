@@ -1,55 +1,52 @@
-char isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4)
+{
+  if (isKnowChip(byte1, byte2, byte3, byte4, 'w')) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, 'r')) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, 'g')) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, 'y')) return true;
+  return false;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
 {
   //read chips
   preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
-
-  byte groupArrayW[32];
-  byte groupArrayY[32];
-  byte groupArrayR[32];
-  byte groupArrayG[32];
-  preferences.getBytes("groupArrayW", groupArrayW, 32);
-  preferences.getBytes("groupArrayY", groupArrayY, 32);
-  preferences.getBytes("groupArrayR", groupArrayR, 32);
-  preferences.getBytes("groupArrayG", groupArrayG, 32);
-  char groupChar = '0';
-
-  for (size_t groupIndex = 0; groupIndex < 4; groupIndex++)
-  {
-    byte *testedGroup;
-
-    switch (groupIndex)
+  byte groupArray[32];
+  switch (group)
     {
-      case 1:
-        testedGroup = groupArrayW;
-        groupChar = 'w';
-        break;
-      case 2:
-        testedGroup = groupArrayY;
-        groupChar = 'y';
-        break;
-      case 3:
-        testedGroup = groupArrayR;
-        groupChar = 'r';
-        break;
-      default:
-        testedGroup = groupArrayG;
-        groupChar = 'g';
-        break;
+    case 'w':
+      preferences.getBytes("groupArrayW", groupArray, 32);
+      break;
+    case 'y':
+      preferences.getBytes("groupArrayY", groupArray, 32);
+      break;
+    case 'g':
+      preferences.getBytes("groupArrayG", groupArray, 32);
+      break;
+    case 'r':
+      preferences.getBytes("groupArrayR", groupArray, 32);
+      break;
+    default:
+      break;
     }
 
     for (size_t i = 0; i < 32; i += 4)
     {
-      if(testedGroup[i] == byte1 && testedGroup[i+1] == byte2 && testedGroup[i+2] == byte3 && testedGroup[i+3] == byte4)
+      if(groupArray[i] == byte1 && groupArray[i+1] == byte2 && groupArray[i+2] == byte3 && groupArray[i+3] == byte4)
       {
         preferences.end();
-        return groupChar;
+        return true;
       }
     }
-  }
-  groupChar = '0';
   preferences.end();
-  return groupChar;
+  return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void rfidCheck()
 {
@@ -80,13 +77,13 @@ void rfidCheck()
   //TODO: check if chip is in any group (wgry) - re-wrote information on main menu screen
 
   //only test solution 
-  if (mfrc522.uid.uidByte[0] == 0xA3 && mfrc522.uid.uidByte[1] == 0x69 && mfrc522.uid.uidByte[2] == 0x56 && mfrc522.uid.uidByte[3] == 0xC9) runCommand(RESET_HW);  
+  //if (mfrc522.uid.uidByte[0] == 0xA3 && mfrc522.uid.uidByte[1] == 0x69 && mfrc522.uid.uidByte[2] == 0x56 && mfrc522.uid.uidByte[3] == 0xC9) runCommand(RESET_HW);  
   
   setMenuText();
 
-  char group = isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3]);
-  Serial.println(group);
-  if (group != '0')
+  bool isKnown = isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3]);
+
+  if (isKnown)
   {
     Serial.println("known chip");   
   }
@@ -96,6 +93,8 @@ void rfidCheck()
   mfrc522.PCD_StopCrypto1();
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void hexPrint(byte *buffer, byte bufferSize) 
 {
   for (byte i = 0; i < bufferSize; i++) {
@@ -103,6 +102,8 @@ void hexPrint(byte *buffer, byte bufferSize)
     Serial.print(buffer[i], HEX);
   }
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void recieveData(WiFiClient client)
 {
@@ -113,3 +114,168 @@ void recieveData(WiFiClient client)
   Serial.print("+");
   Serial.println(dataStr[1]);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
+{
+  if (group == '\0') return;
+  if (isKnowChip(byte1, byte2, byte3, byte4, group)) return;
+  preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
+  byte groupArray[32];
+
+  //Pull data (saved chips)
+  switch(group)
+  {
+    case 'w': 
+    {
+      preferences.getBytes("groupArrayW", groupArray, 32);
+      break;
+    }
+    case 'g': 
+    {
+      preferences.getBytes("groupArrayG", groupArray, 32);
+      break;
+    }
+    case 'y': 
+    {
+      preferences.getBytes("groupArrayY", groupArray, 32);
+      break;
+    }
+    case 'r': 
+    {
+      preferences.getBytes("groupArrayR", groupArray, 32);
+      break;
+    };
+    default:
+    {};
+  }
+  int indexOfChip = 0;
+  bool fullyOccupied = true;
+  for (int i = 0; i < 32; i += 4)
+  {
+    bool freePosition = true;
+    for (int j = 0; j < 4; j++)
+    {
+      if (groupArray[i+j] != 0x00)
+      {
+        freePosition = false;
+        break;
+      }
+    }
+    if (freePosition)
+    {
+      fullyOccupied = false;
+      break;
+    }
+    indexOfChip++;
+  }
+
+  if (fullyOccupied) return;
+  lastChipUsed[0] = 0x00;
+  lastChipUsed[1] = 0x00;
+  lastChipUsed[2] = 0x00;
+  lastChipUsed[3] = 0x00;
+  setMenuText();
+
+  //Push new data
+  groupArray[(indexOfChip)*4] = byte1;
+  groupArray[(indexOfChip)*4+1] = byte2;
+  groupArray[(indexOfChip)*4+2] = byte3;
+  groupArray[(indexOfChip)*4+3] = byte4;
+
+  //Save data
+  switch(group)
+  {
+    case 'w': 
+    {
+      preferences.putBytes("groupArrayW", groupArray, 32);
+      break;
+    }
+    case 'g':
+    {
+      preferences.putBytes("groupArrayG", groupArray, 32);
+      break;
+    }
+    case 'y':
+    {
+      preferences.putBytes("groupArrayY", groupArray, 32);
+      break;
+    }
+    case 'r':
+    {
+      preferences.putBytes("groupArrayR", groupArray, 32);
+      break;
+    };
+    default:
+    {
+    };
+  }
+  preferences.end(); //have to end use preferences
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void removeChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
+{
+  byte groupArray[32];
+  preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
+  switch (group)
+  {
+    case 'w':
+      preferences.getBytes("groupArrayW", groupArray, 32);
+      break;
+    case 'g':
+      preferences.getBytes("groupArrayG", groupArray, 32);
+      break;
+    case 'y':
+      preferences.getBytes("groupArrayY", groupArray, 32);
+      break;
+    case 'r':
+      preferences.getBytes("groupArrayR", groupArray, 32);
+      break;
+    default:
+      break;
+  }
+  int numOfChip = 0;
+  for (numOfChip; numOfChip < 32; numOfChip += 4)
+  {
+    if (groupArray[numOfChip] == byte1 && groupArray[numOfChip+1] == byte2 && groupArray[numOfChip+2] == byte3 && groupArray[numOfChip+3] == byte4)
+    {
+        groupArray[numOfChip] = 0x00;
+        groupArray[numOfChip+1] = 0x00;
+        groupArray[numOfChip+2] = 0x00;
+        groupArray[numOfChip+3] = 0x00;
+        switch (group)
+        {
+          case 'w':
+            preferences.putBytes("groupArrayW", groupArray, 32);
+            break;
+          case 'g':
+            preferences.putBytes("groupArrayG", groupArray, 32);
+            break;
+          case 'y':
+            preferences.putBytes("groupArrayY", groupArray, 32);
+            break;
+          case 'r':
+            preferences.putBytes("groupArrayR", groupArray, 32);
+            break;
+          default:
+            break;
+        }
+    }
+  }
+  preferences.end();
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void removeChip(byte byte1, byte byte2, byte byte3, byte byte4)
+{
+  removeChip(byte1, byte2, byte3, byte4, 'w');
+  removeChip(byte1, byte2, byte3, byte4, 'r');
+  removeChip(byte1, byte2, byte3, byte4, 'g');
+  removeChip(byte1, byte2, byte3, byte4, 'y');
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////

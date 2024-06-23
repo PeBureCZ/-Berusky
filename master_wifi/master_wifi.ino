@@ -31,11 +31,17 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 //Nextion (display)
 NexButton b0 = NexButton(0, 2, "b0"); //page id = 0, component id = 2, obj name = b0
+NexButton b1 = NexButton(0, 3, "b1");  //menu
+NexButton b2 = NexButton(0, 4, "b2");  //remove
+NexButton b3 = NexButton(0, 5, "b3"); //back
 NexText t0 = NexText(0, 1, "t0");
 
 NexTouch *nex_listen_list[] = 
 {
     &b0,
+    &b1,
+    &b2,
+    &b3,
     //another buttons, event, etc..?
     NULL
 };

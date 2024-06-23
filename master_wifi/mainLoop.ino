@@ -1,6 +1,5 @@
 void loop()
 {
-  digitalWrite(BUILD_IN_DIODE, LOW);
   WiFiClient client = server.available();
   if (client) 
   {
@@ -16,5 +15,5 @@ void loop()
   }
   nexLoop(nex_listen_list); //loop for Nextion display
   rfidCheck();
-  delay(100);
+  delay(50);
 }

@@ -18,15 +18,14 @@ bool testChecking = false;
 const uint8_t SOUND_ITEM = 13;
 const uint8_t BUILD_IN_DIODE = 2;
 
-
-#define SS_PIN    21
-#define RST_PIN   22
-#define SIZE_BUFFER     18
-#define MAX_SIZE_BLOCK  16
-
+const uint8_t SS_PIN = 21;
+const uint8_t RST_PIN = 22;
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode wifiStatus;
-MFRC522 mfrc522(SS_PIN, RST_PIN); 
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+
+#define SIZE_BUFFER     18
+#define MAX_SIZE_BLOCK  16
 
 void rfidCheck()
 {
@@ -42,7 +41,7 @@ void rfidCheck()
   // Select a card
   if ( ! mfrc522.PICC_ReadCardSerial()) 
   {
-    Serial.print("test2\n");
+    //Serial.print("test2\n");
     return;
   }
   
