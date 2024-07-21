@@ -1,14 +1,13 @@
 void printTime() 
 {
-  int hours = actualTime / 3600;
-  int minutes = (actualTime - hours*3600) / 60;
-  int seconds = actualTime % 60;
+  unsigned int elapsed = actualTime - lastTime;
+  unsigned int hours = elapsed / 3600;
+  unsigned int minutes = (elapsed % 3600) / 60;
+  unsigned int seconds = elapsed % 60;
 
-  String timeStr = "";
-  (hours < 10) ? timeStr = "0" + hours : timeStr = hours;
-  (minutes < 10) ? timeStr = timeStr + ":" + "0" + minutes : timeStr = timeStr + ":" + minutes;
-  (seconds < 10) ? timeStr = timeStr + ":" + "0" + seconds : timeStr = timeStr + ":" + seconds;
+  // Use sprintf to format the string with leading zeros
+  char timeStr[9]; // Format: "HH:MM:SS\0"
+  sprintf(timeStr, "%02u:%02u:%02u", hours, minutes, seconds);
 
-  //Serial.println(timeStr);
- //TODO print to display
+  t0.setText(timeStr);
 }

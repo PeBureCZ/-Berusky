@@ -3,6 +3,11 @@ void setup()
   Serial.begin(115200);
   pinMode(BUILD_IN_DIODE, OUTPUT);
   digitalWrite(BUILD_IN_DIODE, LOW);
+
+  timer = timerBegin(100000);
+  timerStart(timer);
+  timerAttachInterrupt(timer, &onTimer);
+  timerAlarm(timer, 100000, true, 0); //once per 1sec
   
   pinMode(RX_PIN, INPUT);
   pinMode(TX_PIN, OUTPUT);
@@ -29,11 +34,6 @@ void setup()
   esp_wifi_set_max_tx_power(200); //max is 78, not equal 1:1 
 
   firstTimeMemoryCheck();
-
-  timer = timerBegin(100000);
-  timerStart(timer);
-  timerAttachInterrupt(timer, &onTimer);
-  timerAlarm(timer, 100000, true, 0); //once per 1sec
 }
 
 

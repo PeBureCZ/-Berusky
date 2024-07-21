@@ -6,9 +6,20 @@
 #include <MFRC522.h> //library responsible for communicating with the module mfrc522-RC522
 #include <SPI.h> //library responsible for communicating of SPI bus
 
+enum menuTypes
+{
+  START_MENU = 0,
+  MENU1,
+  MENU2,
+  MENU3,
+  GAME_RUN,
+  GAME_END
+};
+
 const uint8_t BUILD_IN_DIODE = 2;
 const uint8_t TX_PIN = 17;
 const uint8_t RX_PIN = 16;
+int actualMenu = START_MENU;
 
 WiFiServer server(24);
 const char *ssid = "berusky";
@@ -17,6 +28,7 @@ const char *password = "neprolomitelne";
 //global values
 byte lastChipUsed[4] = {0x00, 0x00, 0x00, 0x00};
 unsigned int actualTime = 0;
+unsigned int lastTime = 0;
 
 //time
 hw_timer_t *timer = nullptr;
@@ -49,7 +61,7 @@ NexTouch *nex_listen_list[] =
 void IRAM_ATTR onTimer()
 {
   actualTime++; //seconds
-  printTime();
+  //if (actualMenu == GAME_RUN) printTime();
 }
 
 Preferences preferences; //FLASH MEMORY INICIALIZATION

@@ -50,18 +50,19 @@ bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
 
 void rfidCheck()
 {
+  
    //waiting the card approach
   if (!mfrc522.PICC_IsNewCardPresent()) return;
   // Select a card
   if (!mfrc522.PICC_ReadCardSerial()) return;
   //version of mfrc522 tag
   MFRC522::PICC_Type piccType = mfrc522.PICC_GetType(mfrc522.uid.sak);
-
+  Serial.println("test");
   //check supported tag
   if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&
     piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
     piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
-    //Serial.println("Tento mfrc522 tag neni podporovany (typ MIFARE Classic).");
+    //not supported type of chip (MIFARE Classic);
     return;
   }
   //print HEX chip ID
@@ -130,6 +131,7 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
     case 'w': 
     {
       preferences.getBytes("groupArrayW", groupArray, 32);
+      Serial.println("test1");
       break;
     }
     case 'g': 
@@ -165,6 +167,7 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
     }
     if (freePosition)
     {
+      Serial.println("test2");
       fullyOccupied = false;
       break;
     }
@@ -172,6 +175,7 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   }
 
   if (fullyOccupied) return;
+  Serial.println(lastChipUsed[0]);
   lastChipUsed[0] = 0x00;
   lastChipUsed[1] = 0x00;
   lastChipUsed[2] = 0x00;
