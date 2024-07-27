@@ -131,7 +131,6 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
     case 'w': 
     {
       preferences.getBytes("groupArrayW", groupArray, 32);
-      Serial.println("test1");
       break;
     }
     case 'g': 

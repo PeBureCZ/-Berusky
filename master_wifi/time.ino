@@ -1,6 +1,6 @@
 void printTime() 
 {
-  unsigned int elapsed = actualTime - lastTime;
+  unsigned int elapsed = (actualTime - lastTime) / 1000;
   unsigned int hours = elapsed / 3600;
   unsigned int minutes = (elapsed % 3600) / 60;
   unsigned int seconds = elapsed % 60;

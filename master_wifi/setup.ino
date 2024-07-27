@@ -7,7 +7,7 @@ void setup()
   timer = timerBegin(100000);
   timerStart(timer);
   timerAttachInterrupt(timer, &onTimer);
-  timerAlarm(timer, 100000, true, 0); //once per 1sec
+  timerAlarm(timer, 1000, true, 0); //once per 10 milliseconds
   
   pinMode(RX_PIN, INPUT);
   pinMode(TX_PIN, OUTPUT);

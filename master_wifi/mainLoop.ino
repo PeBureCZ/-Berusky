@@ -10,10 +10,9 @@ void loop()
       {
         recieveData(client);
       }
-      //else Serial.print("no data\n");
     }
   }
   nexLoop(nex_listen_list); //loop for Nextion display
   rfidCheck();
-  delay(50);
+  if (actualMenu == GAME_RUN && (actualTime % 100) < 11) printTime();
 }
