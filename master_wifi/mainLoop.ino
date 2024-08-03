@@ -14,5 +14,5 @@ void loop()
   }
   nexLoop(nex_listen_list); //loop for Nextion display
   rfidCheck();
-  if (actualMenu == GAME_RUN && (actualTime % 100) < 11) printTime();
+  if (actualMenu == GAME_RUN && indexOfGameScreen == 0 && (actualTime % 100) < 11) printTime();
 }

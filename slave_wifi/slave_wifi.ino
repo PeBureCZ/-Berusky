@@ -13,10 +13,8 @@ WiFiClient client;
 
 int status = WL_IDLE_STATUS;
 
-bool testChecking = false;
-
-const uint8_t SOUND_ITEM = 13;
-const uint8_t BUILD_IN_DIODE = 2;
+const uint8_t WIFI_CONNECT = 13;
+const uint8_t SYNCHRONIZED = 12;
 
 const uint8_t SS_PIN = 21;
 const uint8_t RST_PIN = 22;
@@ -29,11 +27,6 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void rfidCheck()
 {
-  if (!testChecking) 
-  {
-      testChecking = true;
-      Serial.print("\nchecking now\n");
-  }
   if ( !mfrc522.PICC_IsNewCardPresent()) 
   {
     return;
@@ -108,34 +101,6 @@ String get_wifi_status(int status)
         case WL_DISCONNECTED:
         return "WL_DISCONNECTED";
     }
-}
-
-
-void sendData(uint8_t firstData, uint8_t secondData)
-{
-  if (client.connect(IP , 24))
-  {
-    uint8_t dataStr[2];
-    dataStr[0] = firstData;
-    dataStr[1] = secondData;
-    Serial.print("Sending data: ");
-    Serial.print(dataStr[0]);
-    client.write(dataStr,sizeof(dataStr));
-    Serial.print(" + ");
-    Serial.print(dataStr[1]);
-    client.flush();
-    client.stop();
-    for(int i = 0; i < 4; i++)
-    {
-      digitalWrite(SOUND_ITEM, LOW);
-      delay(500);
-      digitalWrite(SOUND_ITEM, HIGH);
-      delay(500);
-    }
-    
-    Serial.print("end send");
-  }
-  else Serial.print("no send");
 }
 
 

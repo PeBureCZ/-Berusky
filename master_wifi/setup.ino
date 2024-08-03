@@ -1,8 +1,8 @@
 void setup()
 {
   Serial.begin(115200);
-  pinMode(BUILD_IN_DIODE, OUTPUT);
-  digitalWrite(BUILD_IN_DIODE, LOW);
+  pinMode(WIFI_DIODE, OUTPUT);
+  digitalWrite(WIFI_DIODE, HIGH);
 
   timer = timerBegin(100000);
   timerStart(timer);
@@ -32,8 +32,9 @@ void setup()
   Serial.println(WiFi.softAPIP());
   server.begin();
   esp_wifi_set_max_tx_power(200); //max is 78, not equal 1:1 
-
+  
   firstTimeMemoryCheck();
+  digitalWrite(WIFI_DIODE, LOW);
 }
 
 

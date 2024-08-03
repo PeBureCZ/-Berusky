@@ -9,7 +9,6 @@ void loop()
   }
   else
   {
-    // testChecking = false;
     // while(status != WL_CONNECTED)
     // {
     //   delay(1000);

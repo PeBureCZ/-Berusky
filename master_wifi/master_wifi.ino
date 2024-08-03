@@ -22,11 +22,22 @@ enum menuTypes
   GAME_END
 };
 
-const uint8_t BUILD_IN_DIODE = 2;
+const uint8_t WIFI_DIODE = 13;
 const uint8_t TX_PIN = 17;
 const uint8_t RX_PIN = 16;
 
 int actualMenu = START_MENU;
+unsigned int score[] = 
+{
+  //sorted in order: WGRY
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0
+};
+
+int indexOfGameScreen = 0;
+
 unsigned int minLightOn = 5;
 unsigned int maxLightOn = 20;
 unsigned int minLightOff = 5;
