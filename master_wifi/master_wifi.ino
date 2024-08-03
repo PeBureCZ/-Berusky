@@ -14,16 +14,23 @@ enum menuTypes
   MENU1_R,
   MENU1_Y,
   MENU2,
-  MENU3,
+  MENU3_MIN_ON,
+  MENU3_MAX_ON,
+  MENU3_MIN_OFF,
+  MENU3_MAX_OFF,
   GAME_RUN,
   GAME_END
-
 };
 
 const uint8_t BUILD_IN_DIODE = 2;
 const uint8_t TX_PIN = 17;
 const uint8_t RX_PIN = 16;
+
 int actualMenu = START_MENU;
+unsigned int minLightOn = 5;
+unsigned int maxLightOn = 20;
+unsigned int minLightOff = 5;
+unsigned int maxLightOff = 20;
 
 WiFiServer server(24);
 const char *ssid = "berusky";
@@ -33,6 +40,7 @@ const char *password = "neprolomitelne";
 byte lastChipUsed[4] = {0x00, 0x00, 0x00, 0x00};
 unsigned long long actualTime = 0; //milliseconds
 unsigned long long lastTime = 0; //milliseconds
+unsigned long long pressedTime = 0; //milliseconds
 
 //time
 hw_timer_t *timer = nullptr;

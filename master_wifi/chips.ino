@@ -1,17 +1,23 @@
+
+int getChipIndex(byte byte1, byte byte2, byte byte3, byte byte4, char group)
+{
+
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4)
 {
-  if (isKnowChip(byte1, byte2, byte3, byte4, 'w')) return true;
-  else if (isKnowChip(byte1, byte2, byte3, byte4, 'r')) return true;
-  else if (isKnowChip(byte1, byte2, byte3, byte4, 'g')) return true;
-  else if (isKnowChip(byte1, byte2, byte3, byte4, 'y')) return true;
+  if (isKnowChip(byte1, byte2, byte3, byte4, 'w') != -1) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, 'r')!= -1) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, 'g')!= -1) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, 'y')!= -1) return true;
   return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
+int isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
 {
   //read chips
   preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
@@ -39,11 +45,11 @@ bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
       if(groupArray[i] == byte1 && groupArray[i+1] == byte2 && groupArray[i+2] == byte3 && groupArray[i+3] == byte4)
       {
         preferences.end();
-        return true;
+        return i / 4;
       }
     }
   preferences.end();
-  return false;
+  return -1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,21 +80,8 @@ void rfidCheck()
   lastChipUsed[1] = mfrc522.uid.uidByte[1];
   lastChipUsed[2] = mfrc522.uid.uidByte[2];
   lastChipUsed[3] = mfrc522.uid.uidByte[3];
-
-  //TODO: check if chip is in any group (wgry) - re-wrote information on main menu screen
-
-  //only test solution 
-  //if (mfrc522.uid.uidByte[0] == 0xA3 && mfrc522.uid.uidByte[1] == 0x69 && mfrc522.uid.uidByte[2] == 0x56 && mfrc522.uid.uidByte[3] == 0xC9) runCommand(RESET_HW);  
-  
-  setMenuText();
-
-  bool isKnown = isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3]);
-
-  if (isKnown)
-  {
-    Serial.println("known chip");   
-  }
-  else Serial.println("unknown chip!");
+ 
+  setMenuToChip();
 
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
@@ -121,7 +114,7 @@ void recieveData(WiFiClient client)
 void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
 {
   if (group == '\0') return;
-  if (isKnowChip(byte1, byte2, byte3, byte4, group)) return;
+  if (isKnowChip(byte1, byte2, byte3, byte4, group) != -1) return;
   preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
   byte groupArray[32];
 
@@ -179,7 +172,7 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   lastChipUsed[1] = 0x00;
   lastChipUsed[2] = 0x00;
   lastChipUsed[3] = 0x00;
-  setMenuText();
+  setMenuToChip();
 
   //Push new data
   groupArray[(indexOfChip)*4] = byte1;
@@ -269,6 +262,7 @@ void removeChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
     }
   }
   preferences.end();
+  setMenuToChip();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

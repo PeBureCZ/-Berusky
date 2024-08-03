@@ -3,6 +3,10 @@ void firstTimeMemoryCheck()
   preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
   if (preferences.getInt("statusStart", -1) != -1)
   {
+    preferences.getBytes("minLightOn", &minLightOn, sizeof(int));
+    preferences.getBytes("maxLightOn", &maxLightOn, sizeof(int));
+    preferences.getBytes("minLightOff", &minLightOff, sizeof(int));
+    preferences.getBytes("maxLightOff", &maxLightOff, sizeof(int));
     Serial.println("memory used");
   }
   else
@@ -11,6 +15,7 @@ void firstTimeMemoryCheck()
     preferences.end(); //have to end use preferences
     Serial.println("memory created");
     createMemory();
+    saveData();
   }
 }
 
@@ -80,7 +85,10 @@ void clearAllData()
   Serial.println("all data removed!");
   preferences.end(); //have to end use preferences
   createMemory(); //rebuild data to default values
+  saveData();
   actualTime = 0;
+  lastTime = 0;
+  pressedTime = 0;
   lastChipUsed[0] = 0x00;
   lastChipUsed[1] = 0x00;
   lastChipUsed[2] = 0x00;
@@ -93,4 +101,16 @@ void resetMFRC()
   mfrc522.PCD_Reset();
   SPI.begin(); // Init SPI bus
   mfrc522.PCD_Init();  
+}
+
+void saveData()
+{
+  preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
+
+  preferences.putBytes("minLightOn", &minLightOn, sizeof(int));
+  preferences.putBytes("maxLightOn", &maxLightOn, sizeof(int));
+  preferences.putBytes("maxLightOff", &minLightOff, sizeof(int));
+  preferences.putBytes("maxLightOff", &maxLightOff, sizeof(int));
+
+  preferences.end(); //have to end use preferences
 }
