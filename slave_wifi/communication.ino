@@ -1,38 +1,96 @@
-struct syncData
+struct Message
 {
   unsigned int time;
-  char player;
-  char index;
+  byte byte1;
+  byte byte2;
+  byte byte3;
+  byte byte4;
+  uint8_t slaveID;
 };
 
-void sendMessage()
+struct SyncMessage
 {
+  unsigned int time;
+  byte groupArrayW[32];
+  byte groupArrayG[32];
+  byte groupArrayR[32];
+  byte groupArrayY[32];
+  byte minON;
+  byte maxON;
+  byte minOFF;
+  byte maxOFF;
+};
 
-}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void sendData(uint8_t firstData, uint8_t secondData)
+void sendData(unsigned int currentTime, byte byte1, byte byte2, byte byte3, byte byte4, uint8_t stationID)
 {
   if (client.connect(IP , 24))
   {
-    uint8_t dataStr[2];
-    dataStr[0] = firstData;
-    dataStr[1] = secondData;
-    Serial.print("Sending data: ");
-    Serial.print(dataStr[0]);
-    client.write(dataStr,sizeof(dataStr));
-    Serial.print(" + ");
-    Serial.print(dataStr[1]);
+    Message message;
+    message.time = currentTime;
+    message.byte1 = byte1;
+    message.byte2 = byte2;
+    message.byte3 = byte3; 
+    message.byte4 = byte4;
+    message.slaveID = stationID;
+
+    Serial.print("Sending data...");
+
+    client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
+
     client.flush();
-    client.stop();
-    for(int i = 0; i < 4; i++)
-    {
-      digitalWrite(WIFI_CONNECT, LOW);
-      delay(500);
-      digitalWrite(WIFI_CONNECT, HIGH);
-      delay(500);
-    }
+    // client.stop();
     
-    Serial.print("end send");
+    // for(int i = 0; i < 4; i++)
+    // {
+    //   digitalWrite(WIFI_CONNECT, LOW);
+    //   delay(500);
+    //   digitalWrite(WIFI_CONNECT, HIGH);
+    //   delay(500);
+    // }
+    
+    Serial.print("end send\n");
   }
-  else Serial.print("no send");
+  else Serial.print("no send\n");
+}
+
+void recieveData(WiFiClient& client)
+{
+  Serial.print("\nNew Mclient connected from ");
+  Serial.print(client.remoteIP());
+  Serial.print(":");
+  Serial.println(client.remotePort());
+  SyncMessage message;
+  // Read the bytes into the message struct
+  size_t bytesRead = client.readBytes(reinterpret_cast<byte*>(&message), sizeof(message));
+  
+  if (bytesRead == sizeof(message))
+  {
+    memcpy(groupArrayW, message.groupArrayW, sizeof(message.groupArrayW));
+    memcpy(groupArrayG, message.groupArrayG, sizeof(message.groupArrayG));
+    memcpy(groupArrayR, message.groupArrayR, sizeof(message.groupArrayR));
+    memcpy(groupArrayY, message.groupArrayY, sizeof(message.groupArrayY));
+
+    minLightOn = message.minON;
+    maxLightOn = message.maxON;
+    minLightOff = message.minOFF;
+    maxLightOff = message.maxOFF;
+
+    Serial.print("Received data: ");
+    Serial.print("Time: ");
+    Serial.print(message.time);
+    Serial.print(", minON: ");
+    Serial.print(message.minON);
+    Serial.print(", maxON: ");
+    Serial.print(message.maxON);
+    Serial.print(", minOFF: ");
+    Serial.print(message.minOFF);
+    Serial.print(", maxOFF: ");
+    Serial.print(message.maxOFF);
+  }
+  else
+  {
+    Serial.println("Error: Not enough bytes read\n");
+  }
 }

@@ -1,16 +1,19 @@
 void loop()
 {
-  WiFiClient client = server.available();
-  if (client) 
+  wifiClient = server.available();
+  if (wifiClient) 
   {
     // Wait for data from the client
-    if (client.connected()) 
+    if (wifiClient.connected()) 
     {
-      if (client.available()) 
+      if (wifiClient.available()) 
       {
-        recieveData(client);
+        recieveData(wifiClient);
+        Serial.println("yes6\n");
       }
     }
+    else Serial.println("yes4\n");
+    sendData(wifiClient);
   }
   nexLoop(nex_listen_list); //loop for Nextion display
   rfidCheck();

@@ -91,24 +91,12 @@ void rfidCheck()
 
 void hexPrint(byte *buffer, byte bufferSize) 
 {
-  for (byte i = 0; i < bufferSize; i++) {
+  for (byte i = 0; i < bufferSize; i++) 
+  {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
     Serial.print(buffer[i], HEX);
   }
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void recieveData(WiFiClient client)
-{
-  uint8_t dataStr[2]; 
-  client.readBytes(dataStr, 2);
-  Serial.print("Received data: ");
-  Serial.print(dataStr[0]);
-  Serial.print("+");
-  Serial.println(dataStr[1]);
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)

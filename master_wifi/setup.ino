@@ -36,6 +36,3 @@ void setup()
   firstTimeMemoryCheck();
   digitalWrite(WIFI_DIODE, LOW);
 }
-
-
-

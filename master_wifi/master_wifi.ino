@@ -46,15 +46,18 @@ unsigned int maxLightOff = 20;
 WiFiServer server(24);
 const char *ssid = "berusky";
 const char *password = "neprolomitelne";
+WiFiClient wifiClient;
 
 //global values
 byte lastChipUsed[4] = {0x00, 0x00, 0x00, 0x00};
-unsigned long long actualTime = 0; //milliseconds
-unsigned long long lastTime = 0; //milliseconds
-unsigned long long pressedTime = 0; //milliseconds
+uint8_t slavesID[32] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255}; //32
+//IPAddress slavesIP[32] = {defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP}; //32
 
 //time
 hw_timer_t *timer = nullptr;
+unsigned long long actualTime = 0; //milliseconds
+unsigned long long lastTime = 0; //milliseconds
+unsigned long long pressedTime = 0; //milliseconds
 
 //CHIP READER MFRC
 
