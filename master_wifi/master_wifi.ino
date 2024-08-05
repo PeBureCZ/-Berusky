@@ -6,6 +6,30 @@
 #include <MFRC522.h> //library responsible for communicating with the module mfrc522-RC522
 #include <SPI.h> //library responsible for communicating of SPI bus
 
+const char* BUT_START = "Start";
+const char* BUT_PLAYERS = "Hráči";
+const char* BUT_MENU = "Menu";
+const char* BUT_INTER = "Interval";
+const char* BUT_ADD = "Přidat";
+const char* BUT_REMOVE = "Odebrat";
+const char* BUT_BACK = "Zpět";
+const char* GP_Y = "Žlutá";
+const char* GP_R = "Červená";
+const char* GP_G = "Zelená";
+const char* GP_W = "Modrá";
+const char* BUT_PREVIOUS = "<<";
+const char* BUT_NEXT = ">>";
+const char* START_TEXT = "Berušky 1.0.0";
+const char* MIN_ON_BUT = "minSvit";
+const char* MAX_ON_BUT = "maxSvit";
+const char* MIN_OFF_BUT = "minZhas";
+const char* MAX_OFF_BUT = "maxZhas";
+const char* PLUS_BUT = "+";
+const char* MINUS_BUT = "-";
+const char* BUT_STOP = "Stop";
+const char* CLEAR_INFO = "Data vymazána";
+const char* SCORE = "b.";
+
 enum menuTypes
 {
   START_MENU = 0,

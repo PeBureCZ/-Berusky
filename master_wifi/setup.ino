@@ -21,6 +21,11 @@ void setup()
   b2.attachPop(b2_but, &b2);
   b3.attachPop(b3_but, &b3);
 
+  b0.setText(BUT_START);
+  b1.setText(BUT_MENU);
+  b2.setText(BUT_PLAYERS);
+  b3.setText(BUT_INTER);
+
   //init spi + mfrc522
   SPI.begin();
   mfrc522.PCD_Init();  

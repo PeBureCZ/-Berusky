@@ -6,9 +6,9 @@ void b0_but(void *ptr) //left top RELEASE
     {
       lastTime = actualTime;
       sendCommand("vis b1,0"); //hidde button
-      b3.setText("Stop");
-      b0.setText("<<");
-      b2.setText(">>");
+      b3.setText(BUT_STOP);
+      b0.setText(BUT_PREVIOUS);
+      b2.setText(BUT_NEXT);
       indexOfGameScreen = 0;
       actualMenu = GAME_RUN;
       break;
@@ -50,7 +50,8 @@ void b0_but(void *ptr) //left top RELEASE
     {
       if (minLightOn + 1 >= maxLightOn) break;
       minLightOn++;
-      String newMenuText = "minON = ";
+      String newMenuText = MIN_ON_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOn;
       setMenuText(newMenuText);
       break;
@@ -59,7 +60,8 @@ void b0_but(void *ptr) //left top RELEASE
     {
       if (maxLightOff == 10000) break;
       maxLightOn++;
-      String newMenuText = "maxON = ";
+      String newMenuText = MAX_ON_BUT;
+      newMenuText += " = ";
       newMenuText += maxLightOn;
       setMenuText(newMenuText);  
       break;   
@@ -68,7 +70,8 @@ void b0_but(void *ptr) //left top RELEASE
     {
       if (minLightOff + 1 >= maxLightOff) break;
       minLightOff++; 
-      String newMenuText = "minOFF = ";
+      String newMenuText = MIN_OFF_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOff;
       setMenuText(newMenuText);
       break;  
@@ -77,7 +80,8 @@ void b0_but(void *ptr) //left top RELEASE
     {
       if (maxLightOff == 10000) break;
       maxLightOff++;   
-      String newMenuText = "maxOFF = ";
+      String newMenuText = MAX_OFF_BUT;
+      newMenuText += " = ";
       newMenuText += maxLightOff;
       setMenuText(newMenuText);
       break;
@@ -106,7 +110,7 @@ void b1_but(void *ptr) //left bottom RELEASE
       {
         Serial.println("holded B1 click");
         clearAllData();
-        String newMenuText = "Data cleared";
+        String newMenuText = CLEAR_INFO;
         setMenuText(newMenuText);
       }
       else
@@ -118,38 +122,42 @@ void b1_but(void *ptr) //left bottom RELEASE
       }
       break;
     }
-    case MENU3_MIN_ON: //click on "+" time
+    case MENU3_MIN_ON: //click on "-" time
     {
       if (minLightOn == 0) break;
       minLightOn--;
-      String newMenuText = "minON = ";
+      String newMenuText = MIN_ON_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOn;
       setMenuText(newMenuText);
       break;
     }
-    case MENU3_MAX_ON: //click on "+" time
+    case MENU3_MAX_ON: //click on "-" time
     {
       if (maxLightOn - 1 <= minLightOn) break;
       maxLightOn--;  
-      String newMenuText = "maxON = ";
+      String newMenuText = MAX_ON_BUT;
+      newMenuText += " = ";
       newMenuText += maxLightOn;
       setMenuText(newMenuText);
       break;    
     }
-    case MENU3_MIN_OFF: //click on "+" time
+    case MENU3_MIN_OFF: //click on "-" time
     {
       if (minLightOff == 0) break;
       minLightOff--;  
-      String newMenuText = "minOFF = ";
+      String newMenuText = MIN_OFF_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOff;
       setMenuText(newMenuText);
       break;    
     }
-    case MENU3_MAX_OFF: //click on "+" time
+    case MENU3_MAX_OFF: //click on "-" time
     {
       if (maxLightOff - 1 <= minLightOff ) break;
       maxLightOff--;   
-      String newMenuText = "maxOFF = ";
+      String newMenuText = MAX_OFF_BUT;
+      newMenuText += " = ";
       newMenuText += maxLightOff;
       setMenuText(newMenuText);
       break; 
@@ -170,10 +178,10 @@ void b2_but(void *ptr) //right top RELEASE
   {
     case START_MENU:
     {
-      b0.setText("Add");
-      b1.setText("Remove");
-      b2.setText("gpW");
-      b3.setText("Back");
+      b0.setText(BUT_ADD);
+      b1.setText(BUT_REMOVE);
+      b2.setText(GP_W);
+      b3.setText(BUT_BACK);
       actualMenu = MENU1_W;
       break;
     }
@@ -185,32 +193,33 @@ void b2_but(void *ptr) //right top RELEASE
     }
     case MENU1_W:
     {
-      b2.setText("gpG");
+      b2.setText(GP_G);
       actualMenu = MENU1_G;
       break;
     }
     case MENU1_G:
     {
-      b2.setText("gpR");
+      b2.setText(GP_R);
       actualMenu = MENU1_R;
       break;
     }
     case MENU1_R:
     {
-      b2.setText("gpY");
+      b2.setText(GP_Y);
       actualMenu = MENU1_Y;
       break;
     }
     case MENU1_Y:
     {
-      b2.setText("gpW");
+      b2.setText(GP_W);
       actualMenu = MENU1_W;
       break;
     }
     case MENU3_MIN_ON:
     {
-      b2.setText("maxON");
-      String newMenuText = "maxON = ";
+      b2.setText(MAX_ON_BUT);
+      String newMenuText = MAX_ON_BUT;
+      newMenuText += " = ";
       newMenuText += maxLightOn;
       setMenuText(newMenuText);
       actualMenu = MENU3_MAX_ON;
@@ -218,8 +227,9 @@ void b2_but(void *ptr) //right top RELEASE
     }
     case MENU3_MAX_ON:
     {
-      b2.setText("minOFF");
-      String newMenuText = "minOFF = ";
+      b2.setText(MIN_OFF_BUT);
+      String newMenuText = MIN_OFF_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOff;
       setMenuText(newMenuText);
       actualMenu = MENU3_MIN_OFF;
@@ -227,8 +237,9 @@ void b2_but(void *ptr) //right top RELEASE
     }
     case MENU3_MIN_OFF:
     {
-      b2.setText("maxOFF");
-      String newMenuText = "maxOFF = ";
+      b2.setText(MAX_OFF_BUT);
+      String newMenuText = MAX_OFF_BUT;
+      newMenuText += " = ";
       newMenuText += maxLightOff;
       setMenuText(newMenuText);
       actualMenu = MENU3_MAX_OFF;
@@ -236,8 +247,9 @@ void b2_but(void *ptr) //right top RELEASE
     }
     case MENU3_MAX_OFF:
     {
-      b2.setText("minON");
-      String newMenuText = "minON = ";
+      b2.setText(MIN_ON_BUT);
+      String newMenuText = MIN_ON_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOn;
       setMenuText(newMenuText);
       actualMenu = MENU3_MIN_ON;
@@ -253,28 +265,29 @@ void b3_but(void *ptr)  //right bottom RELEASE
   {
     case START_MENU:
     {
-      b0.setText("+");
-      b1.setText("-");
-      b2.setText("minON");
-      String newMenuText = "minON = ";
+      b0.setText(PLUS_BUT);
+      b1.setText(MINUS_BUT);
+      b2.setText(MIN_ON_BUT);
+      String newMenuText = MIN_ON_BUT;
+      newMenuText += " = ";
       newMenuText += minLightOn;
       setMenuText(newMenuText);
-      b3.setText("Back");
+      b3.setText(BUT_BACK);
       actualMenu = MENU3_MIN_ON;
       break;
     }
     case GAME_RUN:
     {
-      b3.setText("Back");
+      b3.setText(BUT_BACK);
       actualMenu = GAME_END;
       break;
     }
     case GAME_END:
     {
       sendCommand("vis b1,1"); //hidde button
-      b0.setText("Start");
-      b2.setText("Menu1");
-      b3.setText("Menu3");
+      b0.setText(BUT_START);
+      b2.setText(BUT_PLAYERS);
+      b3.setText(BUT_INTER);
       actualMenu = START_MENU;
       String newMenuText = "";
       setMenuText(newMenuText);   
@@ -282,10 +295,10 @@ void b3_but(void *ptr)  //right bottom RELEASE
     }
     default: //DEFF = "Back"
     {
-      b0.setText("Start");
-      b1.setText("Menu2");
-      b2.setText("Menu1");
-      b3.setText("Menu3");
+      b0.setText(BUT_START);
+      b1.setText(BUT_MENU);
+      b2.setText(BUT_PLAYERS);
+      b3.setText(BUT_INTER);
       actualMenu = START_MENU;
       String newMenuText = "";
       setMenuText(newMenuText);
@@ -377,25 +390,25 @@ void setGameScreen(int newMenu)
   output+= ": ";
   if (indexOfGameScreen < 9)
   {
-    output+= "w";
-    output+= String(indexOfGameScreen-1);
+    output+= GP_W;
+    output+= String(indexOfGameScreen);
   }
   else if (indexOfGameScreen < 17) 
   {
-    output+= "g";
+    output+= GP_G;
     output+= String(indexOfGameScreen-8);
   }
   else if (indexOfGameScreen < 25) 
   {
-    output+= "r";
+    output+= GP_R;
     output+= String(indexOfGameScreen-16);
   }
   else 
   {
-    output+= "y";
+    output+= GP_Y;
     output+= String(indexOfGameScreen-24);
-  }
-  output+= " score: ";
+  } 
   output+= String(scoreCopy[indexOfGameScreen-1]);
+  output+= SCORE;
   setMenuText(output);
 }
