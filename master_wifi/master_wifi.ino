@@ -47,8 +47,8 @@ enum menuTypes
 };
 
 const uint8_t WIFI_DIODE = 13;
-const uint8_t TX_PIN = 17;
-const uint8_t RX_PIN = 16;
+const uint8_t TX_PIN = 17; //display
+const uint8_t RX_PIN = 16; //display
 
 int actualMenu = START_MENU;
 unsigned int score[] = 
@@ -85,11 +85,11 @@ unsigned long long pressedTime = 0; //milliseconds
 
 //CHIP READER MFRC
 
-const uint8_t SS_PIN = 21;
-const uint8_t RST_PIN = 22;
-MFRC522::MIFARE_Key key;
-MFRC522::StatusCode wifiStatus;
-MFRC522 mfrc522(SS_PIN, RST_PIN);
+const uint8_t SS_PIN = 21; //rfid reader
+const uint8_t RST_PIN = 22; //rfid reader
+MFRC522::MIFARE_Key key; //rfid reader
+MFRC522::StatusCode wifiStatus; //rfid reader
+MFRC522 mfrc522(SS_PIN, RST_PIN); //rfid reader
 
 //Nextion (display)
 NexButton b0 = NexButton(0, 2, "b0"); //page id = 0, component id = 2, obj name = b0
