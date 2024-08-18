@@ -8,12 +8,12 @@ void loop()
     {
       if (wifiClient.available()) 
       {
-        recieveData(wifiClient);
+        if (recieveData(wifiClient)) sendData(wifiClient); ;
         Serial.println("yes6\n");
       }
     }
     else Serial.println("yes4\n");
-    sendData(wifiClient);
+    //sendData(wifiClient); worked!
   }
   nexLoop(nex_listen_list); //loop for Nextion display
   rfidCheck();

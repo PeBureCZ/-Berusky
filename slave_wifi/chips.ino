@@ -31,27 +31,26 @@ void rfidCheck()
   hexPrint(mfrc522.uid.uidByte, mfrc522.uid.size);
   Serial.println();
 
-  // if(mfrc522.uid.uidByte[0] == 0x80 & mfrc522.uid.uidByte[1] == 0x71 & mfrc522.uid.uidByte[2] == 0xD8 & mfrc522.uid.uidByte[3] == 0x55) 
-  // {
-  // }
-  // else if(mfrc522.uid.uidByte[0] == 0xF3 & mfrc522.uid.uidByte[1] == 0xA5 & mfrc522.uid.uidByte[2] == 0xBD & mfrc522.uid.uidByte[3] == 0xC8) 
-  // {
-  // }
+
   if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'w') != -1)
   {
+    if (getGroupByLight() == 'w') useChipOnLight('w', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'w'));
     Serial.println("known chip - group w!\n");
   }
   else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'y') != -1)
   {
+    if (getGroupByLight() == 'y') useChipOnLight('y', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'y'));
     Serial.println("known chip - group y!\n");
   }
   else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'g') != -1)
   {
     Serial.println("known chip - group g!\n");
+    if (getGroupByLight() == 'g') useChipOnLight('g', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'g'));
   }
   else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'r') != -1)
   {
     Serial.println("known chip - group r!\n");
+    if (getGroupByLight() == 'r') useChipOnLight('r', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'r'));
   }
   else 
   {
@@ -61,6 +60,7 @@ void rfidCheck()
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
 }
+
 
 int isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
 {

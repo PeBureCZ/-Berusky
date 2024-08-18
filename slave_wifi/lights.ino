@@ -1,12 +1,15 @@
 void lightTick()
 {
-  if (lightOn) {
+  if (lightOn)
+  {
     if (lightTime == 0)
     {
       switchLightOff();
       return;
     }
-  } else {
+  }
+  else
+  {
     if (lightTime == 0)
     {
       switchLightOn();
@@ -14,6 +17,15 @@ void lightTick()
     }
   }
   lightTime--;
+}
+
+void switchLightOff()
+{
+  lightTime = getRandomNum(minLightOff, maxLightOff);  
+  if (lightNum != -1 ) digitalWrite(lightNum, LOW);
+  Serial.print("light off: ");
+  Serial.println(lightNum);
+  lightOn = false;
 }
 
 void switchLightOn()
@@ -26,61 +38,62 @@ void switchLightOn()
     colorUsed[2] = 0;
     colorUsed[3] = 0;
   }
-  if (colorUsed[0] == 0 || colorUsed[1] == 0 || colorUsed[2] == 0 || colorUsed[3] == 0)  //some of lights was not chosen yet
+  int oldLightNum = lightNum;
+  while(1)
   {
-    int oldLightNum = lightNum;
-    while(1)
+    int num = getRandomNum(1,100);
+    if (num < 25) lightNum = W_COLOR;
+    else if (num < 50) lightNum = Y_COLOR;
+    else if (num < 75) lightNum = R_COLOR;
+    else lightNum = G_COLOR;
+    bool colorIsUsed = false;
+    for (int i = 0; i < 4; i++)
     {
-      int num = getRandomNum(1,100);
-      if (num < 25) lightNum = W_COLOR;
-      else if (num < 50) lightNum = Y_COLOR;
-      else if (num < 75) lightNum = R_COLOR;
-      else lightNum = G_COLOR;
-      bool colorIsUsed = false;
-      for (int i = 0; i < 3; i++)
+      if (colorUsed[i] == lightNum)
       {
-        if (colorUsed[i] == lightNum)
+        colorIsUsed = true;
+        break;
+      }
+    }
+    if (!colorIsUsed)
+    {
+      for (int i = 0; i < 4; i++)
+      {
+        if (colorUsed[i] == 0)
         {
-          colorIsUsed = true;
+          colorUsed[i] = lightNum;
           break;
         }
       }
-      if (!colorIsUsed)
-      {
-        colorUsed[0] = lightNum;
-        digitalWrite(oldLightNum, LOW);
-        digitalWrite(lightNum, HIGH); 
-        break;
-      }
-      //a random light was used before, it requires a new random light
+      if (oldLightNum != -1 ) digitalWrite(oldLightNum, LOW);  
+      Serial.print("turn off: ");    
+      Serial.print(oldLightNum);    
+      Serial.print(" & turn on: ");    
+      Serial.println(lightNum);    
+      digitalWrite(lightNum, HIGH);      
+      break;
     }
+    //a random light was used before, it requires a new random light
   }
   //generate new time for light ON
   lightTime = getRandomNum(minLightOn, maxLightOn);
-}
-
-void switchLightOff()
-{
-}
-
-void firstLightChoose()
-{
-  switchLightOn();
   lightOn = true;
 }
 
-// const uint8_t W_COLOR = 14;
-// const uint8_t Y_COLOR = 27; //for GROUP LIGHT, GROUP Y
-// const uint8_t R_COLOR = 26; //for GROUP LIGHT, GROUP R
-// const uint8_t G_COLOR = 25; //for GROUP LIGHT, GROUP G
-// const uint8_t DIODE_W = 14; //for GROUP LIGHT, GROUP W
-// const uint8_t DIODE_Y = 27; //for GROUP LIGHT, GROUP Y
-// const uint8_t DIODE_R = 26; //for GROUP LIGHT, GROUP R
-// const uint8_t DIODE_G = 25; //for GROUP LIGHT, GROUP G
-//colorUsed
-//lightNum
-//actualRandomNum
-// unsigned int minLightOn = 5;
-// unsigned int maxLightOn = 20;
-// unsigned int minLightOff = 5;
-// unsigned int maxLightOff = 20;
+char getGroupByLight()
+{
+  if (lightNum == W_COLOR) return 'w';
+  if (lightNum == Y_COLOR) return 'y';
+  if (lightNum == R_COLOR) return 'r';
+  if (lightNum == G_COLOR) return 'g';
+}
+
+void useChipOnLight(char group, int indexOfChip)
+{
+  if (lightOn)
+  {
+    switchLightOff();
+    sendData(group, indexOfChip);
+  }
+  
+}

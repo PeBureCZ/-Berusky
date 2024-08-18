@@ -12,6 +12,12 @@ void setup()
   digitalWrite(WIFI_CONNECT, LOW);
   digitalWrite(SYNCHRONIZED, LOW);
 
+  //inter clock
+  timer = timerBegin(100000);
+  timerStart(timer);
+  timerAttachInterrupt(timer, &onTimer);
+  timerAlarm(timer, 1000, true, 0); //once per 10 milliseconds
+
   //game group lights
   pinMode(DIODE_W, OUTPUT);
   pinMode(DIODE_Y, OUTPUT);
@@ -41,14 +47,14 @@ void setup()
     status = WiFi.status();
     if (status == WL_CONNECTED)
     {
-      unsigned int timeToSend = static_cast<unsigned int>(actualTime/1000);
-      sendData(timeToSend, 0x01, 0x02, 0x03, 0x04, slaveID);
+      sendData(0, -1); //for synchronization
       break;
     }
   }
   digitalWrite(WIFI_CONNECT, HIGH);
   digitalWrite(SYNCHRONIZED, HIGH);
   
-  generateNewRandom(); //initialize random nums
-  lightNum = getRandomNum(0,3);
+  initializeRandom(); //initialize random nums
+  switchLightOn();
+  lightTime = getRandomNum(minLightOn, maxLightOn);
 }

@@ -42,6 +42,14 @@ unsigned long long lightTime = 0; //seconds
 #define SIZE_BUFFER     18
 #define MAX_SIZE_BLOCK  16
 
+//inter clock
+hw_timer_t *timer = nullptr;
+void IRAM_ATTR onTimer()
+{
+  actualTime += 10; //miliseconds
+  if ((actualTime % 1000) == 0) lightTick();
+}
+
 // podprogram pro výpis adresy mfrc522 tagu v hexa formátu
 void hexPrint(byte *buffer, byte bufferSize) 
 {

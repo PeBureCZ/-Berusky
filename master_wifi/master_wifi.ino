@@ -74,8 +74,6 @@ WiFiClient wifiClient;
 
 //global values
 byte lastChipUsed[4] = {0x00, 0x00, 0x00, 0x00};
-uint8_t slavesID[32] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255}; //32
-//IPAddress slavesIP[32] = {defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP,defIP}; //32
 
 //time
 hw_timer_t *timer = nullptr;

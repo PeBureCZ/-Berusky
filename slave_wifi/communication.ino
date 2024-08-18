@@ -1,11 +1,8 @@
 struct Message
 {
   unsigned int time;
-  byte byte1;
-  byte byte2;
-  byte byte3;
-  byte byte4;
-  uint8_t slaveID;
+  char group;
+  int index;
 };
 
 struct SyncMessage
@@ -23,32 +20,22 @@ struct SyncMessage
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void sendData(unsigned int currentTime, byte byte1, byte byte2, byte byte3, byte byte4, uint8_t stationID)
+void sendData(char group, int indexOfChip)
 {
   if (client.connect(IP , 24))
   {
     Message message;
-    message.time = currentTime;
-    message.byte1 = byte1;
-    message.byte2 = byte2;
-    message.byte3 = byte3; 
-    message.byte4 = byte4;
-    message.slaveID = stationID;
+    unsigned int timeToSend = 0;
+    if (group !=  0) timeToSend = static_cast<unsigned int>(actualTime/1000);
+    message.time = timeToSend;
+    message.group = group;
+    message.index = indexOfChip;
 
     Serial.print("Sending data...");
 
     client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
 
     client.flush();
-    // client.stop();
-    
-    // for(int i = 0; i < 4; i++)
-    // {
-    //   digitalWrite(WIFI_CONNECT, LOW);
-    //   delay(500);
-    //   digitalWrite(WIFI_CONNECT, HIGH);
-    //   delay(500);
-    // }
     
     Serial.print("end send\n");
   }
@@ -77,6 +64,8 @@ void recieveData(WiFiClient& client)
     minLightOff = message.minOFF;
     maxLightOff = message.maxOFF;
 
+    actualTime = message.time * 1000; //transfer to milliseconds
+
     Serial.print("Received data: ");
     Serial.print("Time: ");
     Serial.print(message.time);
@@ -87,7 +76,7 @@ void recieveData(WiFiClient& client)
     Serial.print(", minOFF: ");
     Serial.print(message.minOFF);
     Serial.print(", maxOFF: ");
-    Serial.print(message.maxOFF);
+    Serial.println(message.maxOFF);
   }
   else
   {
