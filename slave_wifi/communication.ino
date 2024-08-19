@@ -31,13 +31,9 @@ void sendData(char group, int indexOfChip)
     message.group = group;
     message.index = indexOfChip;
 
-    Serial.print("Sending data...");
-
     client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
 
     client.flush();
-    
-    Serial.print("end send\n");
   }
   else Serial.print("no send\n");
 }

@@ -10,6 +10,8 @@ void b0_but(void *ptr) //left top RELEASE
       b0.setText(BUT_PREVIOUS);
       b2.setText(BUT_NEXT);
       indexOfGameScreen = 0;
+      lastGameTime = 0 - 1; //maximum size of variable value due to accept points from catch stations
+      resetScore();
       actualMenu = GAME_RUN;
       break;
     }
@@ -17,7 +19,7 @@ void b0_but(void *ptr) //left top RELEASE
     {
       if (indexOfGameScreen == 0) break;
       indexOfGameScreen--;
-      if (indexOfGameScreen == 0) break;
+      if (indexOfGameScreen == 0) break; //to not rewrite timer clock
       setGameScreen(indexOfGameScreen);
       break;
     }
@@ -280,6 +282,7 @@ void b3_but(void *ptr)  //right bottom RELEASE
     {
       b3.setText(BUT_BACK);
       actualMenu = GAME_END;
+      lastGameTime = actualTime; //set the time of game end to compare times from catch stations
       break;
     }
     case GAME_END:
@@ -353,7 +356,7 @@ void setMenuToChip()
 void setGameScreen(int newMenu)
 {
   indexOfGameScreen = newMenu;
-  if (indexOfGameScreen == 0) return;
+  if (indexOfGameScreen < 1 || indexOfGameScreen > 31) return;
 
   //copy score array
   unsigned int scoreCopy[32]; 
@@ -369,14 +372,14 @@ void setGameScreen(int newMenu)
   };
 
   //sort
-  for (int i = 1; i <= 32; i++)
+  for (int i = 1; i < 32; i++)
   {
     unsigned int keyScore = scoreCopy[i];
     unsigned int keyPlayer = player[i];
     int j = i - 1;
 
     // Move elements of arr[0..i-1], that are greater than key, to one position ahead of their current position
-    while (j >= 0 && scoreCopy[j] > keyScore)
+    while (j >= 0 && scoreCopy[j] < keyScore)
     {
       scoreCopy[j + 1] = scoreCopy[j];
       player[j + 1] = player[j];
@@ -388,27 +391,29 @@ void setGameScreen(int newMenu)
 
   String output = String(indexOfGameScreen);
   output+= ": ";
-  if (indexOfGameScreen < 9)
+  int actualPlayer = player[indexOfGameScreen-1];
+  if (actualPlayer < 9)
   {
     output+= GP_W;
-    output+= String(indexOfGameScreen);
+    output+= String(actualPlayer);
   }
-  else if (indexOfGameScreen < 17) 
+  else if (actualPlayer < 17) 
   {
     output+= GP_G;
-    output+= String(indexOfGameScreen-8);
+    output+= String(actualPlayer-8);
   }
-  else if (indexOfGameScreen < 25) 
+  else if (actualPlayer < 25) 
   {
     output+= GP_R;
-    output+= String(indexOfGameScreen-16);
+    output+= String(actualPlayer-16);
   }
   else 
   {
     output+= GP_Y;
-    output+= String(indexOfGameScreen-24);
-  } 
-  output+= String(scoreCopy[indexOfGameScreen-1]);
-  output+= SCORE;
+    output+= String(actualPlayer-24);
+  }
+  output+= "=";
+  output += String(score[actualPlayer-1]);
+  output += SCORE;
   setMenuText(output);
 }

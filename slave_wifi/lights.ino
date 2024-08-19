@@ -66,9 +66,7 @@ void switchLightOn()
         }
       }
       if (oldLightNum != -1 ) digitalWrite(oldLightNum, LOW);  
-      Serial.print("turn off: ");    
-      Serial.print(oldLightNum);    
-      Serial.print(" & turn on: ");    
+      Serial.print("turn on light: ");    
       Serial.println(lightNum);    
       digitalWrite(lightNum, HIGH);      
       break;

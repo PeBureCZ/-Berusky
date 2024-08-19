@@ -11,6 +11,11 @@ enum Commands
   ADMIN_PRINT,
 };
 
+void resetScore()
+{ 
+  for (auto player : score) player = 0;
+}
+
 bool runCommand(int command)
 {
   switch (command)

@@ -11,13 +11,9 @@ void rfidCheck()
     //Serial.print("test2\n");
     return;
   }
-
-  Serial.println("chip readed");
   
   // WRITE INFORMATION
   MFRC522::PICC_Type piccType = mfrc522.PICC_GetType(mfrc522.uid.sak);
-  Serial.print("mfrc522 tag typu: ");
-  Serial.println(mfrc522.PICC_GetTypeName(piccType));
 
   // CHECK SUPPORTED TYPES
   if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&  
@@ -27,9 +23,9 @@ void rfidCheck()
     return;
   }
   // write hex id
-  Serial.print("Adresa mfrc522 tagu: ");
-  hexPrint(mfrc522.uid.uidByte, mfrc522.uid.size);
-  Serial.println();
+  // Serial.print("Adresa mfrc522 tagu: ");
+  // hexPrint(mfrc522.uid.uidByte, mfrc522.uid.size);
+  // Serial.println();
 
 
   if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'w') != -1)

@@ -78,11 +78,11 @@ byte lastChipUsed[4] = {0x00, 0x00, 0x00, 0x00};
 //time
 hw_timer_t *timer = nullptr;
 unsigned long long actualTime = 0; //milliseconds
-unsigned long long lastTime = 0; //milliseconds
+unsigned long long lastTime = 0; //milliseconds - used for game time calculation (last time = start time of the new game)
 unsigned long long pressedTime = 0; //milliseconds
+unsigned long long lastGameTime = 0 - 1; //milliseconds (maximum size)
 
 //CHIP READER MFRC
-
 const uint8_t SS_PIN = 21; //rfid reader
 const uint8_t RST_PIN = 22; //rfid reader
 MFRC522::MIFARE_Key key; //rfid reader

@@ -39,17 +39,30 @@ bool recieveData(WiFiClient& client)
     Serial.print(", group: ");
     Serial.print(message.group);
     Serial.print(", index: ");
-    Serial.print(message.index);
+    Serial.println(message.index);
 
     if (message.time == 0)
     {
       sendData(client);
-      Serial.println("send sync data...");
+      Serial.println("send sync data...\n¨¨");
       return true;
     }
     else
     {
-      Serial.println("no sync data...");
+      if (message.time <= lastGameTime/1000) // seconds <= miliseconds / 1000
+      {
+        //sorted in order: WGRY
+        int IndexInScore = message.index;
+        if (message.group == 'g') IndexInScore += 8;
+        else if (message.group == 'r') IndexInScore += 16;
+        else if (message.group == 'y') IndexInScore += 24;
+        ++score[IndexInScore];
+        Serial.print("add score +1 to ");
+        Serial.print(message.group);
+        Serial.print(" / index = ");
+        Serial.print(message.index);
+      }
+      else Serial.println("game stop - no points");
       return false;
     }
 

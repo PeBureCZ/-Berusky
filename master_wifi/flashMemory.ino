@@ -109,7 +109,7 @@ void saveData()
 
   preferences.putBytes("minLightOn", &minLightOn, sizeof(int));
   preferences.putBytes("maxLightOn", &maxLightOn, sizeof(int));
-  preferences.putBytes("maxLightOff", &minLightOff, sizeof(int));
+  preferences.putBytes("minLightOff", &minLightOff, sizeof(int));
   preferences.putBytes("maxLightOff", &maxLightOff, sizeof(int));
 
   preferences.end(); //have to end use preferences
