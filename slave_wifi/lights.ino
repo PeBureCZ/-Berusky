@@ -12,6 +12,14 @@ void lightTick()
   {
     if (lightTime == 0)
     {
+      if (waitForSend)
+      {
+        Serial.println("wait for send activated");
+        //diode flickering if wait for sand message
+        if (actualTime % 2000 == 0) digitalWrite(SYNCHRONIZED, HIGH);
+        else digitalWrite(SYNCHRONIZED, LOW);
+        return;
+      }
       switchLightOn();
       return;
     }
@@ -91,7 +99,9 @@ void useChipOnLight(char group, int indexOfChip)
   if (lightOn)
   {
     switchLightOff();
-    sendData(group, indexOfChip);
+    messageToSend.group = group;
+    messageToSend.index = indexOfChip;
+    waitForSend = true;
   }
   
 }

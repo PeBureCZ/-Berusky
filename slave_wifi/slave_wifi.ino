@@ -17,8 +17,27 @@ WiFiClient client;
 
 int status = WL_IDLE_STATUS;
 
-const uint8_t WIFI_CONNECT = 13; //for special control diode
-const uint8_t SYNCHRONIZED = 12; //for special control diode
+struct Message
+{
+  unsigned int time;
+  char group;
+  int index;
+};
+
+struct SyncMessage
+{
+  unsigned int time;
+  byte groupArrayB[32];
+  byte groupArrayG[32];
+  byte groupArrayR[32];
+  byte groupArrayY[32];
+  byte minON;
+  byte maxON;
+  byte minOFF;
+  byte maxOFF;
+};
+
+const uint8_t SYNCHRONIZED = 32; //for special control diode
 
 const uint8_t B_COLOR = 14;
 const uint8_t Y_COLOR = 27;
@@ -37,6 +56,8 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); //rfid reader
 
 unsigned long long actualTime = 0; //milliseconds
 unsigned long long lightTime = 0; //seconds
+
+bool initialized = false;
 
 #define SIZE_BUFFER     18
 #define MAX_SIZE_BLOCK  16
@@ -57,6 +78,9 @@ void hexPrint(byte *buffer, byte bufferSize)
     Serial.print(buffer[i], HEX);
   }
 }
+
+//create default message to send information between stations
+Message messageToSend;
 
 String get_wifi_status(int status)
 {
@@ -86,6 +110,8 @@ unsigned int maxLightOff = 20;
 bool lightOn = false;
 int lightNum = -1;
 int colorUsed[] = {0,0,0,0};
+
+bool waitForSend = false;
 
 byte groupArrayB[32] = 
 {

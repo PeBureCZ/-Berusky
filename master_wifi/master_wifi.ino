@@ -29,6 +29,7 @@ const char* MINUS_BUT = "-";
 const char* BUT_STOP = "Stop";
 const char* CLEAR_INFO = "Data vymazána";
 const char* SCORE = "b.";
+const char* PLAYER_ADD = "Přidáno";
 
 const uint8_t B_COLOR = 14; //VALUE = PIN ON SLAVE, HAVE TO BE SAME DUE TO COMMUNICATION
 const uint8_t Y_COLOR = 27; //VALUE = PIN ON SLAVE, HAVE TO BE SAME DUE TO COMMUNICATION

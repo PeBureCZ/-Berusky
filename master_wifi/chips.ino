@@ -249,10 +249,10 @@ void removeChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
 
 void removeChip(byte byte1, byte byte2, byte byte3, byte byte4)
 {
-  removeChip(byte1, byte2, byte3, byte4, 'w');
-  removeChip(byte1, byte2, byte3, byte4, 'r');
-  removeChip(byte1, byte2, byte3, byte4, 'g');
-  removeChip(byte1, byte2, byte3, byte4, 'y');
+  removeChip(byte1, byte2, byte3, byte4, B_COLOR);
+  removeChip(byte1, byte2, byte3, byte4, R_COLOR);
+  removeChip(byte1, byte2, byte3, byte4, G_COLOR);
+  removeChip(byte1, byte2, byte3, byte4, Y_COLOR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

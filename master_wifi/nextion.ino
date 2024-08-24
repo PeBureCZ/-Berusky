@@ -344,7 +344,7 @@ void setMenuToChip()
   output += String(lastChipUsed[3], HEX);
   output += "\n";
   
-  if (lastChipUsed[0] == 0x00) output += "(empty)";
+  if (lastChipUsed[0] == 0x00) output = PLAYER_ADD;
   else
   {
     for (int i = 0; i < 4; i++)

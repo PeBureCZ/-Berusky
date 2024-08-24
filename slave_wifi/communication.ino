@@ -1,41 +1,26 @@
-struct Message
-{
-  unsigned int time;
-  char group;
-  int index;
-};
 
-struct SyncMessage
-{
-  unsigned int time;
-  byte groupArrayB[32];
-  byte groupArrayG[32];
-  byte groupArrayR[32];
-  byte groupArrayY[32];
-  byte minON;
-  byte maxON;
-  byte minOFF;
-  byte maxOFF;
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-void sendData(char group, int indexOfChip)
+void sendData(struct Message& message) //char group, int indexOfChip
 {
   if (client.connect(IP , 24))
   {
-    Message message;
     unsigned int timeToSend = 0;
-    if (group !=  0) timeToSend = static_cast<unsigned int>(actualTime/1000);
+    if (message.group !=  0) timeToSend = static_cast<unsigned int>(actualTime/1000);
     message.time = timeToSend;
-    message.group = group;
-    message.index = indexOfChip;
-
     client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
-
     client.flush();
+
+    //reset value to default
+    message.time = 0;
+    message.group = 0;
+    message.index = -1;
+    waitForSend = false;
+    digitalWrite(SYNCHRONIZED, LOW);
   }
-  else Serial.print("no send\n");
+  else
+  {
+    Serial.print("no send\n");
+    waitForSend = true;
+  }
 }
 
 void recieveData(WiFiClient& client)

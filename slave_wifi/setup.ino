@@ -7,16 +7,8 @@ void setup()
   }
 
   //controler diodes
-  pinMode(WIFI_CONNECT, OUTPUT);
   pinMode(SYNCHRONIZED, OUTPUT);
-  digitalWrite(WIFI_CONNECT, LOW);
-  digitalWrite(SYNCHRONIZED, LOW);
-
-  //inter clock
-  timer = timerBegin(100000);
-  timerStart(timer);
-  timerAttachInterrupt(timer, &onTimer);
-  timerAlarm(timer, 1000, true, 0); //once per 10 milliseconds
+  digitalWrite(SYNCHRONIZED, HIGH);
 
   //game group lights
   pinMode(DIODE_B, OUTPUT);
@@ -36,23 +28,25 @@ void setup()
   WiFi.mode(WIFI_STA); //WIFI_STATION
   WiFi.begin(ssid, password);
 
-  Serial.println("connected to the server\n");
-
   esp_wifi_set_max_tx_power(200);
 
   Serial.println("slave start");
   delay(250);
-  while(true)
-  {
-    status = WiFi.status();
-    if (status == WL_CONNECTED)
-    {
-      sendData(0, -1); //for synchronization
-      break;
-    }
-  }
-  digitalWrite(WIFI_CONNECT, HIGH);
-  digitalWrite(SYNCHRONIZED, HIGH);
+}
+
+void initializeAfterSync()
+{
+  //inter clock
+  timer = timerBegin(100000);
+  timerStart(timer);
+  timerAttachInterrupt(timer, &onTimer);
+  timerAlarm(timer, 1000, true, 0); //once per 10 milliseconds
+
+  digitalWrite(SYNCHRONIZED, LOW);
+
+  messageToSend.time = 0;
+  messageToSend.group = 0;
+  messageToSend.index = -1;
   
   initializeRandom(); //initialize random nums
   switchLightOn();
