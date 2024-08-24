@@ -16,7 +16,7 @@ const char* BUT_BACK = "Zpět";
 const char* GP_Y = "Žlutá";
 const char* GP_R = "Červená";
 const char* GP_G = "Zelená";
-const char* GP_W = "Modrá";
+const char* GP_B = "Modrá";
 const char* BUT_PREVIOUS = "<<";
 const char* BUT_NEXT = ">>";
 const char* START_TEXT = "Berušky 1.0.0";
@@ -30,14 +30,19 @@ const char* BUT_STOP = "Stop";
 const char* CLEAR_INFO = "Data vymazána";
 const char* SCORE = "b.";
 
+const uint8_t B_COLOR = 14; //VALUE = PIN ON SLAVE, HAVE TO BE SAME DUE TO COMMUNICATION
+const uint8_t Y_COLOR = 27; //VALUE = PIN ON SLAVE, HAVE TO BE SAME DUE TO COMMUNICATION
+const uint8_t R_COLOR = 26; //VALUE = PIN ON SLAVE, HAVE TO BE SAME DUE TO COMMUNICATION
+const uint8_t G_COLOR = 25; //VALUE = PIN ON SLAVE, HAVE TO BE SAME DUE TO COMMUNICATION
+
 enum menuTypes
 {
   START_MENU = 0,
-  MENU1_W,
+  MENU1_B,
   MENU1_G,
   MENU1_R,
   MENU1_Y,
-  MENU2,
+  MENU_SCORE,
   MENU3_MIN_ON,
   MENU3_MAX_ON,
   MENU3_MIN_OFF,

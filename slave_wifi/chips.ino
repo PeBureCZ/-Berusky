@@ -28,25 +28,25 @@ void rfidCheck()
   // Serial.println();
 
 
-  if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'w') != -1)
+  if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], B_COLOR) != -1)
   {
-    if (getGroupByLight() == 'w') useChipOnLight('w', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'w'));
-    Serial.println("known chip - group w!\n");
+    if (getGroupByLight() == B_COLOR) useChipOnLight(B_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], B_COLOR));
+    Serial.println("known chip - group b!\n");
   }
-  else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'y') != -1)
+  else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], Y_COLOR) != -1)
   {
-    if (getGroupByLight() == 'y') useChipOnLight('y', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'y'));
+    if (getGroupByLight() == Y_COLOR) useChipOnLight(Y_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], Y_COLOR));
     Serial.println("known chip - group y!\n");
   }
-  else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'g') != -1)
+  else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], G_COLOR) != -1)
   {
     Serial.println("known chip - group g!\n");
-    if (getGroupByLight() == 'g') useChipOnLight('g', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'g'));
+    if (getGroupByLight() == G_COLOR) useChipOnLight(G_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], G_COLOR));
   }
-  else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'r') != -1)
+  else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], R_COLOR) != -1)
   {
     Serial.println("known chip - group r!\n");
-    if (getGroupByLight() == 'r') useChipOnLight('r', isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], 'r'));
+    if (getGroupByLight() == R_COLOR) useChipOnLight(R_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], R_COLOR));
   }
   else 
   {
@@ -64,16 +64,16 @@ int isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   byte groupArray[32];
   switch (group)
   {
-  case 'w':
-    memcpy(groupArray, groupArrayW, sizeof(groupArrayW));
+  case B_COLOR:
+    memcpy(groupArray, groupArrayB, sizeof(groupArrayB));
     break;
-  case 'y':
+  case Y_COLOR:
     memcpy(groupArray, groupArrayY, sizeof(groupArrayY));
     break;
-  case 'g':
+  case G_COLOR:
     memcpy(groupArray, groupArrayG, sizeof(groupArrayG));
     break;
-  case 'r':
+  case R_COLOR:
     memcpy(groupArray, groupArrayR, sizeof(groupArrayR));
     break;
   default:

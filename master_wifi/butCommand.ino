@@ -13,7 +13,8 @@ enum Commands
 
 void resetScore()
 { 
-  for (auto player : score) player = 0;
+  for (int i = 0; i < 32; i++) score[i] = 0;
+  Serial.println("reset score");
 }
 
 bool runCommand(int command)
@@ -53,19 +54,19 @@ void adminCommand()
 
   preferences.begin("my-app", true); //open preferences "my-app". True is "read-only"
 
-  byte groupArrayW[32];
+  byte groupArrayB[32];
   byte groupArrayR[32]; 
   byte groupArrayY[32]; 
   byte groupArrayG[32]; 
-  preferences.getBytes("groupArrayW", groupArrayW, 32);
+  preferences.getBytes("groupArrayB", groupArrayB, 32);
   preferences.getBytes("groupArrayR", groupArrayR, 32);
   preferences.getBytes("groupArrayY", groupArrayY, 32);
   preferences.getBytes("groupArrayG", groupArrayG, 32);
 
-  output += "chipy w: ";
+  output += "chipy b: ";
   for (int i = 0; i < 32; i++) 
   {
-    output += String(groupArrayW[i], HEX);
+    output += String(groupArrayB[i], HEX);
     output += ", ";
   }
   output += " \n";

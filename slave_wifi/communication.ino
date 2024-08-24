@@ -8,7 +8,7 @@ struct Message
 struct SyncMessage
 {
   unsigned int time;
-  byte groupArrayW[32];
+  byte groupArrayB[32];
   byte groupArrayG[32];
   byte groupArrayR[32];
   byte groupArrayY[32];
@@ -50,7 +50,7 @@ void recieveData(WiFiClient& client)
   
   if (bytesRead == sizeof(message))
   {
-    memcpy(groupArrayW, message.groupArrayW, sizeof(message.groupArrayW));
+    memcpy(groupArrayB, message.groupArrayB, sizeof(message.groupArrayB));
     memcpy(groupArrayG, message.groupArrayG, sizeof(message.groupArrayG));
     memcpy(groupArrayR, message.groupArrayR, sizeof(message.groupArrayR));
     memcpy(groupArrayY, message.groupArrayY, sizeof(message.groupArrayY));

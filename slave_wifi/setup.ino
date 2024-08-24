@@ -19,11 +19,11 @@ void setup()
   timerAlarm(timer, 1000, true, 0); //once per 10 milliseconds
 
   //game group lights
-  pinMode(DIODE_W, OUTPUT);
+  pinMode(DIODE_B, OUTPUT);
   pinMode(DIODE_Y, OUTPUT);
   pinMode(DIODE_R, OUTPUT);
   pinMode(DIODE_G, OUTPUT);
-  digitalWrite(DIODE_W, LOW);
+  digitalWrite(DIODE_B, LOW);
   digitalWrite(DIODE_Y, LOW);
   digitalWrite(DIODE_R, LOW);
   digitalWrite(DIODE_G, LOW);

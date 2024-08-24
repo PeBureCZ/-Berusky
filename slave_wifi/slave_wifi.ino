@@ -20,15 +20,14 @@ int status = WL_IDLE_STATUS;
 const uint8_t WIFI_CONNECT = 13; //for special control diode
 const uint8_t SYNCHRONIZED = 12; //for special control diode
 
-const uint8_t W_COLOR = 14;
+const uint8_t B_COLOR = 14;
 const uint8_t Y_COLOR = 27;
 const uint8_t R_COLOR = 26;
 const uint8_t G_COLOR = 25;
-const uint8_t DIODE_W = W_COLOR; //for GROUP LIGHT, GROUP W
+const uint8_t DIODE_B = B_COLOR; //for GROUP LIGHT, GROUP W
 const uint8_t DIODE_Y = Y_COLOR; //for GROUP LIGHT, GROUP Y
 const uint8_t DIODE_R = R_COLOR; //for GROUP LIGHT, GROUP R
 const uint8_t DIODE_G = G_COLOR; //for GROUP LIGHT, GROUP G
-
 
 const uint8_t SS_PIN = 21; //rfid reader
 const uint8_t RST_PIN = 22; //rfid reader
@@ -88,7 +87,7 @@ bool lightOn = false;
 int lightNum = -1;
 int colorUsed[] = {0,0,0,0};
 
-byte groupArrayW[32] = 
+byte groupArrayB[32] = 
 {
   0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00,

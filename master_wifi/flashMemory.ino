@@ -24,7 +24,7 @@ void createMemory()
   preferences.begin("my-app", false);
   //GROUPs
   // 8 chips saved in array (1st chip = index 0-3, 8th chip = index 29-32)
-  byte groupArrayW[32] = 
+  byte groupArrayB[32] = 
   {
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
@@ -35,9 +35,9 @@ void createMemory()
     0x00, 0x00, 0x00, 0x00,         
     0x00, 0x00, 0x00, 0x00, 
   };
-  preferences.putBytes("groupArrayW", groupArrayW, 32);
+  preferences.putBytes("groupArrayB", groupArrayB, 32);
 
-    byte groupArrayG[32] = 
+  byte groupArrayG[32] = 
   {
     0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,

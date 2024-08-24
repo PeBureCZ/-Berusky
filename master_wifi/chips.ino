@@ -1,17 +1,10 @@
 
-int getChipIndex(byte byte1, byte byte2, byte byte3, byte byte4, char group)
-{
-
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 bool isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4)
 {
-  if (isKnowChip(byte1, byte2, byte3, byte4, 'w') != -1) return true;
-  else if (isKnowChip(byte1, byte2, byte3, byte4, 'r')!= -1) return true;
-  else if (isKnowChip(byte1, byte2, byte3, byte4, 'g')!= -1) return true;
-  else if (isKnowChip(byte1, byte2, byte3, byte4, 'y')!= -1) return true;
+  if (isKnowChip(byte1, byte2, byte3, byte4, B_COLOR) != -1) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, R_COLOR)!= -1) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, G_COLOR)!= -1) return true;
+  else if (isKnowChip(byte1, byte2, byte3, byte4, Y_COLOR)!= -1) return true;
   return false;
 }
 
@@ -24,20 +17,19 @@ int isKnowChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   byte groupArray[32];
   switch (group)
     {
-    case 'w':
-      preferences.getBytes("groupArrayW", groupArray, 32);
+    case B_COLOR:
+      preferences.getBytes("groupArrayB", groupArray, 32);
       break;
-    case 'y':
+    case Y_COLOR:
       preferences.getBytes("groupArrayY", groupArray, 32);
       break;
-    case 'g':
+    case G_COLOR:
       preferences.getBytes("groupArrayG", groupArray, 32);
       break;
-    case 'r':
+    case R_COLOR:
       preferences.getBytes("groupArrayR", groupArray, 32);
       break;
-    default:
-      break;
+    default: {return -1;}
     }
 
     for (size_t i = 0; i < 32; i += 4)
@@ -109,22 +101,22 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   //Pull data (saved chips)
   switch(group)
   {
-    case 'w': 
+    case B_COLOR: 
     {
-      preferences.getBytes("groupArrayW", groupArray, 32);
+      preferences.getBytes("groupArrayB", groupArray, 32);
       break;
     }
-    case 'g': 
+    case G_COLOR: 
     {
       preferences.getBytes("groupArrayG", groupArray, 32);
       break;
     }
-    case 'y': 
+    case Y_COLOR: 
     {
       preferences.getBytes("groupArrayY", groupArray, 32);
       break;
     }
-    case 'r': 
+    case R_COLOR: 
     {
       preferences.getBytes("groupArrayR", groupArray, 32);
       break;
@@ -171,22 +163,22 @@ void addNewChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   //Save data
   switch(group)
   {
-    case 'w': 
+    case B_COLOR: 
     {
-      preferences.putBytes("groupArrayW", groupArray, 32);
+      preferences.putBytes("groupArrayB", groupArray, 32);
       break;
     }
-    case 'g':
+    case G_COLOR:
     {
       preferences.putBytes("groupArrayG", groupArray, 32);
       break;
     }
-    case 'y':
+    case Y_COLOR:
     {
       preferences.putBytes("groupArrayY", groupArray, 32);
       break;
     }
-    case 'r':
+    case R_COLOR:
     {
       preferences.putBytes("groupArrayR", groupArray, 32);
       break;
@@ -206,16 +198,16 @@ void removeChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
   preferences.begin("my-app", false); //open preferences "my-app". False is "no read-only"
   switch (group)
   {
-    case 'w':
-      preferences.getBytes("groupArrayW", groupArray, 32);
+    case B_COLOR:
+      preferences.getBytes("groupArrayB", groupArray, 32);
       break;
-    case 'g':
+    case G_COLOR:
       preferences.getBytes("groupArrayG", groupArray, 32);
       break;
-    case 'y':
+    case Y_COLOR:
       preferences.getBytes("groupArrayY", groupArray, 32);
       break;
-    case 'r':
+    case R_COLOR:
       preferences.getBytes("groupArrayR", groupArray, 32);
       break;
     default:
@@ -232,16 +224,16 @@ void removeChip(byte byte1, byte byte2, byte byte3, byte byte4, char group)
         groupArray[numOfChip+3] = 0x00;
         switch (group)
         {
-          case 'w':
-            preferences.putBytes("groupArrayW", groupArray, 32);
+          case B_COLOR:
+            preferences.putBytes("groupArrayB", groupArray, 32);
             break;
-          case 'g':
+          case G_COLOR:
             preferences.putBytes("groupArrayG", groupArray, 32);
             break;
-          case 'y':
+          case Y_COLOR:
             preferences.putBytes("groupArrayY", groupArray, 32);
             break;
-          case 'r':
+          case R_COLOR:
             preferences.putBytes("groupArrayR", groupArray, 32);
             break;
           default:

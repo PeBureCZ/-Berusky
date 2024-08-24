@@ -42,7 +42,7 @@ void switchLightOn()
   while(1)
   {
     int num = getRandomNum(1,100);
-    if (num < 25) lightNum = W_COLOR;
+    if (num < 25) lightNum = B_COLOR;
     else if (num < 50) lightNum = Y_COLOR;
     else if (num < 75) lightNum = R_COLOR;
     else lightNum = G_COLOR;
@@ -80,10 +80,10 @@ void switchLightOn()
 
 char getGroupByLight()
 {
-  if (lightNum == W_COLOR) return 'w';
-  if (lightNum == Y_COLOR) return 'y';
-  if (lightNum == R_COLOR) return 'r';
-  if (lightNum == G_COLOR) return 'g';
+  if (lightNum == B_COLOR) return B_COLOR;
+  if (lightNum == Y_COLOR) return Y_COLOR;
+  if (lightNum == R_COLOR) return R_COLOR;
+  if (lightNum == G_COLOR) return G_COLOR;
 }
 
 void useChipOnLight(char group, int indexOfChip)

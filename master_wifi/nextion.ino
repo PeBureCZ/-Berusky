@@ -17,34 +17,33 @@ void b0_but(void *ptr) //left top RELEASE
     }
     case GAME_RUN:
     {
-      if (indexOfGameScreen == 0) break;
-      indexOfGameScreen--;
-      if (indexOfGameScreen == 0) break; //to not rewrite timer clock
+      --indexOfGameScreen;
+      if (indexOfGameScreen < 0) indexOfGameScreen = 0; //to not rewrite timer clock
       setGameScreen(indexOfGameScreen);
       break;
     }
-    case MENU1_W:
+    case MENU1_B:
     {
-      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], 'w');  
-      Serial.println("add to w");
+      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], B_COLOR);  
+      Serial.println("add to b");
       break;
     }
     case MENU1_G:
     {
-      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], 'g');  
+      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], G_COLOR);  
       Serial.println("add to g");
       break;
     }
 
     case MENU1_R:
     {
-      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], 'r');  
+      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], R_COLOR);  
       Serial.println("add to r");
       break;
     }
     case MENU1_Y:
     {
-      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], 'y');  
+      if (lastChipUsed[0] != 0x00) addNewChip(lastChipUsed[0],lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], Y_COLOR);  
       Serial.println("add to y");
       break;
     }
@@ -88,27 +87,38 @@ void b0_but(void *ptr) //left top RELEASE
       setMenuText(newMenuText);
       break;
     }
+    case MENU_SCORE: //click on "MENU" on basic screen
+    {
+      if (indexOfGameScreen == 1) break;
+      setGameScreen(--indexOfGameScreen);
+      break;
+    }
     default: break;
   }
 }
 
 void b1_but(void *ptr) //left bottom RELEASE
 {
-
+  runCommand(ADMIN_PRINT);
   switch (actualMenu)
   {
     case START_MENU:
     {
-      Serial.println("ONLY TEMPORARY!");
-      runCommand(ADMIN_PRINT);
+      sendCommand("vis b1,0"); //hidde button
+      b3.setText(BUT_BACK);
+      b0.setText(BUT_PREVIOUS);
+      b2.setText(BUT_NEXT);
+      indexOfGameScreen = 1;
+      actualMenu = MENU_SCORE;
+      setGameScreen(1);
       break;
     }
-    case MENU1_W:
+    case MENU1_B:
     case MENU1_G:
     case MENU1_R:
     case MENU1_Y:
     {
-      if ((MENU1_W || MENU1_G || MENU1_R || MENU1_Y) && actualTime - pressedTime > 3000)
+      if ((MENU1_B || MENU1_G || MENU1_R || MENU1_Y) && actualTime - pressedTime > 3000)
       {
         Serial.println("holded B1 click");
         clearAllData();
@@ -182,9 +192,9 @@ void b2_but(void *ptr) //right top RELEASE
     {
       b0.setText(BUT_ADD);
       b1.setText(BUT_REMOVE);
-      b2.setText(GP_W);
+      b2.setText(GP_B);
       b3.setText(BUT_BACK);
-      actualMenu = MENU1_W;
+      actualMenu = MENU1_B;
       break;
     }
     case GAME_RUN:
@@ -193,7 +203,7 @@ void b2_but(void *ptr) //right top RELEASE
       setGameScreen(++indexOfGameScreen);
       break;
     }
-    case MENU1_W:
+    case MENU1_B:
     {
       b2.setText(GP_G);
       actualMenu = MENU1_G;
@@ -213,8 +223,8 @@ void b2_but(void *ptr) //right top RELEASE
     }
     case MENU1_Y:
     {
-      b2.setText(GP_W);
-      actualMenu = MENU1_W;
+      b2.setText(GP_B);
+      actualMenu = MENU1_B;
       break;
     }
     case MENU3_MIN_ON:
@@ -256,6 +266,11 @@ void b2_but(void *ptr) //right top RELEASE
       setMenuText(newMenuText);
       actualMenu = MENU3_MIN_ON;
       break;     
+    }
+    case MENU_SCORE: //click on "MENU" on basic screen
+    {
+      if (indexOfGameScreen == 32) break;
+      setGameScreen(++indexOfGameScreen);;
     }
     default: break;
   }
@@ -303,7 +318,8 @@ void b3_but(void *ptr)  //right bottom RELEASE
       b2.setText(BUT_PLAYERS);
       b3.setText(BUT_INTER);
       actualMenu = START_MENU;
-      String newMenuText = "";
+      sendCommand("vis b1,1"); //unhidde button
+      String newMenuText = START_TEXT;
       setMenuText(newMenuText);
       saveData();
       break;     
@@ -333,17 +349,17 @@ void setMenuToChip()
   {
     for (int i = 0; i < 4; i++)
     {
-      char group;
-      if (i == 0) group = 'w';
-      else if (i == 1) group = 'r';
-      else if (i == 2) group = 'y';
-      else if (i == 3) group = 'g';
+      char group = 0;
+      if (i == 0) group = B_COLOR; 
+      else if (i == 1) group = R_COLOR;
+      else if (i == 2) group = Y_COLOR;
+      else if (i == 3) group = G_COLOR;
 
       int indexOfChip = isKnowChip(lastChipUsed[0], lastChipUsed[1],lastChipUsed[2],lastChipUsed[3], group);
       if (indexOfChip != -1)
       {
         output += "(";
-        output += group;
+        output += getGroupText(group);
         output += indexOfChip+1; //transfer from index of chip to num of chip
         output += ")";
         break;
@@ -356,7 +372,7 @@ void setMenuToChip()
 void setGameScreen(int newMenu)
 {
   indexOfGameScreen = newMenu;
-  if (indexOfGameScreen < 1 || indexOfGameScreen > 31) return;
+  if (indexOfGameScreen < 1 || indexOfGameScreen > 32) return;
 
   //copy score array
   unsigned int scoreCopy[32]; 
@@ -394,7 +410,7 @@ void setGameScreen(int newMenu)
   int actualPlayer = player[indexOfGameScreen-1];
   if (actualPlayer < 9)
   {
-    output+= GP_W;
+    output+= GP_B;
     output+= String(actualPlayer);
   }
   else if (actualPlayer < 17) 
