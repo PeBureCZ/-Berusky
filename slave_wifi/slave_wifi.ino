@@ -3,25 +3,25 @@
 #include <MFRC522.h> //library responsible for communicating with the module mfrc522-RC522
 #include <SPI.h> //library responsible for communicating of SPI bus
 #include <esp_wifi.h> //allow esp_wifi_set_max_tx_power(20);
-
-//wifi
-const char* ssid     = "berusky";
-const char* password = "neprolomitelne";
-   
-IPAddress IP (192, 168, 4, 1);  //adress to connect
-
-//each slave station must have unique ID for correct communication!
-uint8_t slaveID = 0; //must not be bigger than 32!!!
-
-WiFiClient client;
-
-int status = WL_IDLE_STATUS;
+#include <Preferences.h> //flash memory 
 
 struct Message
 {
-  unsigned int time;
-  char group;
-  int index;
+  unsigned int time = 0;
+  char group = 0;
+  int index = -1;
+  Message(){}
+  Message(const Message& other) : time(other.time), group(other.group), index(other.index) {}
+  Message& operator=(const Message& other)
+  {
+    if (this != &other)
+    {
+      time = other.time;
+      group = other.group;
+      index = other.index;
+    }
+    return *this;
+  }
 };
 
 struct SyncMessage
@@ -36,6 +36,81 @@ struct SyncMessage
   byte minOFF;
   byte maxOFF;
 };
+
+class MessageHolder
+{
+  private:
+  int lastIndex = -1;
+  Message messages[32];
+
+  public:
+  MessageHolder(){}
+  int getCount()
+  {
+    return lastIndex;
+  }
+  void addMessage(Message& message)
+  {
+    //if the block index is 31, then messages need to be saved in flash memory
+    int blockIndex = lastIndex % 32;
+    if (blockIndex >= 31)
+    {
+
+    }
+    else
+    {
+      ++lastIndex;
+      messages[++blockIndex] = message;
+    }
+  }
+  bool removeLast()
+  {
+    if (lastIndex != -1)
+    {
+      --lastIndex;
+      int blockIndex = lastIndex % 32;
+      if (blockIndex == 31)
+      {
+        //need to load new messages from flash memory
+      }
+      return true;
+    }
+    else return false;
+  }
+  bool canAdd()
+  {
+    if (lastIndex == 255) return false;
+    else return true;
+  }
+  Message getLast()
+  {
+    
+    if (lastIndex != -1)
+    {
+      int blockIndex = lastIndex % 32;
+      return messages[blockIndex];
+    }
+    else
+    {
+      Message message;
+      return message;
+    }
+  }
+};
+
+
+//wifi
+const char* ssid     = "berusky";
+const char* password = "neprolomitelne";
+   
+IPAddress IP (192, 168, 4, 1);  //adress to connect
+
+//each slave station must have unique ID for correct communication!
+uint8_t slaveID = 0; //must not be bigger than 32!!!
+
+WiFiClient client;
+
+int status = WL_IDLE_STATUS;
 
 const uint8_t SYNCHRONIZED = 32; //for special control diode
 
@@ -70,17 +145,10 @@ void IRAM_ATTR onTimer()
   if ((actualTime % 1000) == 0) lightTick();
 }
 
-// podprogram pro výpis adresy mfrc522 tagu v hexa formátu
-void hexPrint(byte *buffer, byte bufferSize) 
-{
-  for (byte i = 0; i < bufferSize; i++) {
-    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    Serial.print(buffer[i], HEX);
-  }
-}
+//create a holder class for carrying messages if communication between the slave and master stations failes
+MessageHolder messageHolder;
+Preferences preferences; //FLASH MEMORY INICIALIZATION
 
-//create default message to send information between stations
-Message messageToSend;
 
 String get_wifi_status(int status)
 {
@@ -110,8 +178,6 @@ unsigned int maxLightOff = 20;
 bool lightOn = false;
 int lightNum = -1;
 int colorUsed[] = {0,0,0,0};
-
-bool waitForSend = false;
 
 byte groupArrayB[32] = 
 {

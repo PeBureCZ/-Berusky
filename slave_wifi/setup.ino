@@ -43,10 +43,6 @@ void initializeAfterSync()
   timerAlarm(timer, 1000, true, 0); //once per 10 milliseconds
 
   digitalWrite(SYNCHRONIZED, LOW);
-
-  messageToSend.time = 0;
-  messageToSend.group = 0;
-  messageToSend.index = -1;
   
   initializeRandom(); //initialize random nums
   switchLightOn();

@@ -1,29 +1,42 @@
 
-void sendData(struct Message& message) //char group, int indexOfChip
+bool sendSyncMessage()
 {
   if (client.connect(IP , 24))
   {
-    unsigned int timeToSend = 0;
-    if (message.group !=  0) timeToSend = static_cast<unsigned int>(actualTime/1000);
-    message.time = timeToSend;
+    Message message; //create only deffault message (with index == -1, etc.) The master station knows that the slave station is not synchronized
     client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
     client.flush();
-
-    //reset value to default
-    message.time = 0;
-    message.group = 0;
-    message.index = -1;
-    waitForSend = false;
     digitalWrite(SYNCHRONIZED, LOW);
+    return true;
   }
-  else
-  {
-    Serial.print("no send\n");
-    waitForSend = true;
-  }
+  else return false;
 }
 
-void recieveData(WiFiClient& client)
+void sendData() //char group, int indexOfChip
+{
+  if (client.connect(IP , 24))
+  {
+    Message message;
+    message.time = messageHolder.getLast().time;
+    message.group = messageHolder.getLast().group;
+    message.index = messageHolder.getLast().index;
+    Serial.print("get data from sended message ");
+    Serial.print(", time: ");
+    Serial.print(message.time);
+    Serial.print(", group: ");
+    Serial.print(message.group);
+    Serial.print(", index: ");
+    Serial.print(message.index);
+
+    client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
+    client.flush();
+    messageHolder.removeLast();
+    digitalWrite(SYNCHRONIZED, LOW);
+  }
+  else Serial.print("no send\n");
+}
+
+bool recieveData(WiFiClient& client)
 {
   Serial.print("\nNew Mclient connected from ");
   Serial.print(client.remoteIP());
@@ -58,9 +71,13 @@ void recieveData(WiFiClient& client)
     Serial.print(message.minOFF);
     Serial.print(", maxOFF: ");
     Serial.println(message.maxOFF);
+
+    initialized = true;
+    return true;
   }
   else
   {
     Serial.println("Error: Not enough bytes read\n");
+    return false;
   }
 }
