@@ -20,14 +20,6 @@ void sendData() //char group, int indexOfChip
     message.time = messageHolder.getLast().time;
     message.group = messageHolder.getLast().group;
     message.index = messageHolder.getLast().index;
-    Serial.print("get data from sended message ");
-    Serial.print(", time: ");
-    Serial.print(message.time);
-    Serial.print(", group: ");
-    Serial.print(message.group);
-    Serial.print(", index: ");
-    Serial.print(message.index);
-
     client.write(reinterpret_cast<uint8_t*>(&message), sizeof(message));
     client.flush();
     messageHolder.removeLast();

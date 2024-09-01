@@ -28,7 +28,7 @@ void rfidCheck()
   if (piccType != MFRC522::PICC_TYPE_MIFARE_MINI &&  
     piccType != MFRC522::PICC_TYPE_MIFARE_1K &&
     piccType != MFRC522::PICC_TYPE_MIFARE_4K) {
-    Serial.println("Tento mfrc522 tag neni podporovany (typ MIFARE Classic).");
+    //Serial.println("Tento mfrc522 tag neni podporovany (typ MIFARE Classic).");
     return;
   }
   // write hex id
@@ -40,26 +40,26 @@ void rfidCheck()
   if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], B_COLOR) != -1)
   {
     if (getGroupByLight() == B_COLOR) useChipOnLight(B_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], B_COLOR));
-    Serial.println("known chip - group b!\n");
+    //Serial.println("known chip - group b!\n");
   }
   else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], Y_COLOR) != -1)
   {
     if (getGroupByLight() == Y_COLOR) useChipOnLight(Y_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], Y_COLOR));
-    Serial.println("known chip - group y!\n");
+    //Serial.println("known chip - group y!\n");
   }
   else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], G_COLOR) != -1)
   {
-    Serial.println("known chip - group g!\n");
+    //Serial.println("known chip - group g!\n");
     if (getGroupByLight() == G_COLOR) useChipOnLight(G_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], G_COLOR));
   }
   else if (isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], R_COLOR) != -1)
   {
-    Serial.println("known chip - group r!\n");
+    //Serial.println("known chip - group r!\n");
     if (getGroupByLight() == R_COLOR) useChipOnLight(R_COLOR, isKnowChip(mfrc522.uid.uidByte[0], mfrc522.uid.uidByte[1], mfrc522.uid.uidByte[2], mfrc522.uid.uidByte[3], R_COLOR));
   }
   else 
   {
-    Serial.println("Detekovan neznamy mfrc522 tag!\n");
+    //Serial.println("Detekovan neznamy mfrc522 tag!\n");
   }
 
   mfrc522.PICC_HaltA();

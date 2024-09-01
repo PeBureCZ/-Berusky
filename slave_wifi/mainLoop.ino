@@ -2,7 +2,7 @@ void loop()
 {
   status = WiFi.status();
 
-  if (messageHolder.getCount() != 255) rfidCheck();
+  if (messageHolder.getCount() != MEM_BLOCK_SIZE*8-1) rfidCheck();
   else delay(50); 
 
   if (status == WL_CONNECTED)
@@ -12,7 +12,7 @@ void loop()
     {
       if (client.available())
       {
-        Serial.print("slave recieve...\n");  
+        //Serial.print("slave recieve...\n");  
         if (recieveData(client)) initializeAfterSync();;
       }
     }

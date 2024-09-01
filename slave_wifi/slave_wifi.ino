@@ -5,6 +5,17 @@
 #include <esp_wifi.h> //allow esp_wifi_set_max_tx_power(20);
 #include <Preferences.h> //flash memory 
 
+Preferences preferences; //FLASH MEMORY INICIALIZATION
+
+const uint8_t B_COLOR = 14;
+const uint8_t Y_COLOR = 27;
+const uint8_t R_COLOR = 26;
+const uint8_t G_COLOR = 25;
+const uint8_t DIODE_B = B_COLOR; //for GROUP LIGHT, GROUP W
+const uint8_t DIODE_Y = Y_COLOR; //for GROUP LIGHT, GROUP Y
+const uint8_t DIODE_R = R_COLOR; //for GROUP LIGHT, GROUP R
+const uint8_t DIODE_G = G_COLOR; //for GROUP LIGHT, GROUP G
+
 struct Message
 {
   unsigned int time = 0;
@@ -37,11 +48,13 @@ struct SyncMessage
   byte maxOFF;
 };
 
+const unsigned char MEM_BLOCK_SIZE = 32; //size of the memory block that hold messages and will be saved onto flash memory
+
 class MessageHolder
 {
   private:
   int lastIndex = -1;
-  Message messages[32];
+  Message messages[MEM_BLOCK_SIZE];
 
   public:
   MessageHolder(){}
@@ -52,26 +65,37 @@ class MessageHolder
   void addMessage(Message& message)
   {
     //if the block index is 31, then messages need to be saved in flash memory
-    int blockIndex = lastIndex % 32;
-    if (blockIndex >= 31)
+    int blockIndex = lastIndex % MEM_BLOCK_SIZE;
+    if (blockIndex >= MEM_BLOCK_SIZE-1)
     {
+      int blocknNum = lastIndex / MEM_BLOCK_SIZE; //determine what block is used for save data to the flash memory
+      String adress = "memoryBlock" + String(blocknNum*MEM_BLOCK_SIZE); //could be 0 
+      Serial.print("created adress-out: ");
+      Serial.println(adress);
 
+      preferences.begin("my-app", false);
+      preferences.putBytes(adress.c_str(), messages, sizeof(messages));
+      preferences.end();
+      messages[0] = message; //start from start index (rewriting)
     }
-    else
-    {
-      ++lastIndex;
-      messages[++blockIndex] = message;
-    }
+    else messages[++blockIndex] = message;   
+    ++lastIndex;
   }
   bool removeLast()
   {
     if (lastIndex != -1)
     {
-      --lastIndex;
-      int blockIndex = lastIndex % 32;
-      if (blockIndex == 31)
+      --lastIndex; 
+      int blockIndex = lastIndex % MEM_BLOCK_SIZE; 
+      if (blockIndex == MEM_BLOCK_SIZE-1) 
       {
         //need to load new messages from flash memory
+        int blocknNum = lastIndex / MEM_BLOCK_SIZE; //determine what block is used for save data to the flash memory 
+        String adress = "memoryBlock" + String(blocknNum*MEM_BLOCK_SIZE); //could be 0       
+        preferences.begin("my-app", true); //true for read only
+        preferences.getBytes(adress.c_str(), messages, sizeof(messages));
+        preferences.end();
+
       }
       return true;
     }
@@ -79,7 +103,7 @@ class MessageHolder
   }
   bool canAdd()
   {
-    if (lastIndex == 255) return false;
+    if (lastIndex == MEM_BLOCK_SIZE*8-1) return false;
     else return true;
   }
   Message getLast()
@@ -87,7 +111,7 @@ class MessageHolder
     
     if (lastIndex != -1)
     {
-      int blockIndex = lastIndex % 32;
+      int blockIndex = lastIndex % MEM_BLOCK_SIZE;
       return messages[blockIndex];
     }
     else
@@ -102,26 +126,11 @@ class MessageHolder
 //wifi
 const char* ssid     = "berusky";
 const char* password = "neprolomitelne";
-   
 IPAddress IP (192, 168, 4, 1);  //adress to connect
-
-//each slave station must have unique ID for correct communication!
-uint8_t slaveID = 0; //must not be bigger than 32!!!
-
 WiFiClient client;
-
 int status = WL_IDLE_STATUS;
 
 const uint8_t SYNCHRONIZED = 32; //for special control diode
-
-const uint8_t B_COLOR = 14;
-const uint8_t Y_COLOR = 27;
-const uint8_t R_COLOR = 26;
-const uint8_t G_COLOR = 25;
-const uint8_t DIODE_B = B_COLOR; //for GROUP LIGHT, GROUP W
-const uint8_t DIODE_Y = Y_COLOR; //for GROUP LIGHT, GROUP Y
-const uint8_t DIODE_R = R_COLOR; //for GROUP LIGHT, GROUP R
-const uint8_t DIODE_G = G_COLOR; //for GROUP LIGHT, GROUP G
 
 const uint8_t SS_PIN = 21; //rfid reader
 const uint8_t RST_PIN = 22; //rfid reader
@@ -147,8 +156,6 @@ void IRAM_ATTR onTimer()
 
 //create a holder class for carrying messages if communication between the slave and master stations failes
 MessageHolder messageHolder;
-Preferences preferences; //FLASH MEMORY INICIALIZATION
-
 
 String get_wifi_status(int status)
 {

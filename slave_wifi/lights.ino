@@ -10,11 +10,11 @@ void lightTick()
   }
   else
   {
-    if (messageHolder.getCount() == 255) return;
+    if (messageHolder.getCount() == MEM_BLOCK_SIZE*8-1) return;
     else if (messageHolder.getCount() != -1)
     {
       //diode flickering if it wait for send message
-      Serial.println("wait for send activated"); 
+      //Serial.println("wait for send activated"); 
       if (actualTime % 1000 == 0) digitalWrite(SYNCHRONIZED, HIGH);
       else if (actualTime % 500 == 0) digitalWrite(SYNCHRONIZED, LOW);
     }

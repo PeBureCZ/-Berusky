@@ -22,10 +22,10 @@ struct SyncMessage
 
 bool recieveData(WiFiClient& client)
 {
-  Serial.print("\nNew client connected from ");
-  Serial.print(client.remoteIP());
-  Serial.print(":");
-  Serial.println(client.remotePort());
+  // Serial.print("\nNew client connected from ");
+  // Serial.print(client.remoteIP());
+  // Serial.print(":");
+  // Serial.println(client.remotePort());
   Message message;
 
   // Read the bytes into the message struct
@@ -58,7 +58,7 @@ bool recieveData(WiFiClient& client)
         else if (message.group == Y_COLOR) IndexInScore += 24;
         ++score[IndexInScore];
         Serial.print("add score +1 to ");
-        Serial.print(message.group);
+        Serial.print(getGroupText(message.group));
         Serial.print(" / index = ");
         Serial.print(message.index);
         if (GAME_RUN && indexOfGameScreen > 0) setGameScreen(indexOfGameScreen);

@@ -6,6 +6,8 @@
 #include <MFRC522.h> //library responsible for communicating with the module mfrc522-RC522
 #include <SPI.h> //library responsible for communicating of SPI bus
 
+bool temporalBool = true;
+
 const char* BUT_START = "Start";
 const char* BUT_PLAYERS = "Hráči";
 const char* BUT_MENU = "Menu";

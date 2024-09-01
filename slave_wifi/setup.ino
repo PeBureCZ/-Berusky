@@ -30,8 +30,33 @@ void setup()
 
   esp_wifi_set_max_tx_power(200);
 
-  Serial.println("slave start");
+  //memory management
+  preferences.begin("my-app", false);
+  preferences.clear(); //can hold a previous game
+  Message memoryBlock[MEM_BLOCK_SIZE];
+  String basic = "memoryBlock";
+  String adress = basic + String(0);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //0
+  adress = basic + String(MEM_BLOCK_SIZE);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //1
+  adress = basic + String(MEM_BLOCK_SIZE*2);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //2
+  adress = basic + String(MEM_BLOCK_SIZE*3);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //3
+  adress = basic + String(MEM_BLOCK_SIZE*4);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //4
+  adress = basic + String(MEM_BLOCK_SIZE*5);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //5
+  adress = basic + String(MEM_BLOCK_SIZE*6);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //6
+  adress = basic + String(MEM_BLOCK_SIZE*7);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //7
+  adress = basic + String(MEM_BLOCK_SIZE*8);
+  preferences.putBytes(adress.c_str(), memoryBlock, sizeof(memoryBlock)); //8
+  preferences.end(); // Ukončí práci s Preferences
+
   delay(250);
+  Serial.println("slave start");
 }
 
 void initializeAfterSync()
